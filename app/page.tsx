@@ -1,56 +1,40 @@
-import { Link } from '@nextui-org/link'
-import { Snippet } from '@nextui-org/snippet'
-import { Code } from '@nextui-org/code'
-import { button as buttonStyles } from '@nextui-org/theme'
+import { button as buttonStyles } from '@nextui-org/theme';
+import NextLink from 'next/link';
+import { Image } from '@nextui-org/image';
 
-import { siteConfig } from '@/config/site'
-import { subtitle, title } from '@/components/primitives'
-import { GithubIcon } from '@/components/icons'
+import { title } from '@/components/primitives';
 
 export default function Home() {
+  const images = [
+    { src: '/hollywood-high.jpg', title: 'Highwood High 16' },
+    { src: '/el-toro.jpg', title: 'El Toro 20' },
+  ];
+
+  const image = images[Math.floor(Math.random() * images.length)];
+
   return (
-    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-      <div className="inline-block max-w-lg text-center justify-center">
-        <h1 className={title()}>Make&nbsp;</h1>
-        <h1 className={title({ color: 'violet' })}>beautiful&nbsp;</h1>
-        <br />
+    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-12">
+      <div className="inline-block max-w-3xl text-center justify-center">
+        <div className="mb-8">
+          <Image isBlurred src={image.src} alt={image.title} />
+        </div>
         <h1 className={title()}>
-          websites regardless of your design experience.
+          Skate the world with <span className="text-primary">GoSkate</span>
         </h1>
-        <h2 className={subtitle({ class: 'mt-4' })}>
-          Beautiful, fast and modern React UI library.
-        </h2>
       </div>
 
       <div className="flex gap-3">
-        <Link
-          isExternal
-          href={siteConfig.links.docs}
+        <NextLink
+          href="/spots"
           className={buttonStyles({
             color: 'primary',
             radius: 'full',
             variant: 'shadow',
           })}
         >
-          Documentation
-        </Link>
-        <Link
-          isExternal
-          className={buttonStyles({ variant: 'bordered', radius: 'full' })}
-          href={siteConfig.links.github}
-        >
-          <GithubIcon size={20} />
-          GitHub
-        </Link>
-      </div>
-
-      <div className="mt-8">
-        <Snippet hideSymbol hideCopyButton variant="flat">
-          <span>
-            Get started by editing <Code color="primary">app/page.tsx</Code>
-          </span>
-        </Snippet>
+          Check Out Spots
+        </NextLink>
       </div>
     </section>
-  )
+  );
 }
