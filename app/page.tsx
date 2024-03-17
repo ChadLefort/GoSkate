@@ -1,6 +1,6 @@
-import { button as buttonStyles } from '@nextui-org/theme';
 import NextLink from 'next/link';
 import { Image } from '@nextui-org/image';
+import { Button } from '@nextui-org/button';
 
 import { title } from '@/components/primitives';
 
@@ -24,16 +24,9 @@ export default function Home() {
       </div>
 
       <div className="flex gap-3">
-        <NextLink
-          href="/spots"
-          className={buttonStyles({
-            color: 'primary',
-            radius: 'full',
-            variant: 'shadow',
-          })}
-        >
-          Check Out Spots
-        </NextLink>
+        <Button size="lg" variant="shadow">
+          <NextLink href="/spots">Check Out Spots</NextLink>
+        </Button>
       </div>
     </section>
   );
