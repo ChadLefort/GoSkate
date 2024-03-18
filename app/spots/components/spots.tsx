@@ -9,27 +9,28 @@ import {
   TableRow,
 } from '@nextui-org/table';
 
-import { ThenArg } from '@/utils/type-helpers';
-import { getData } from '@/actions/spot-actions';
+import type { Spot } from '@/actions/spot-actions';
 
 type Props = {
-  spots: ThenArg<ReturnType<typeof getData>>;
+  spots: Spot[];
 };
 
 export default function Spots({ spots }: Props) {
   return (
-    <Table aria-label="Example static collection table">
+    <Table aria-label="A table of skate spots">
       <TableHeader>
-        <TableColumn>Id</TableColumn>
         <TableColumn>Name</TableColumn>
+        <TableColumn>Address</TableColumn>
         <TableColumn>Description</TableColumn>
+        <TableColumn>Bust Level</TableColumn>
       </TableHeader>
       <TableBody>
         {spots.map((spot) => (
           <TableRow key={spot.id}>
-            <TableCell>{spot.id}</TableCell>
             <TableCell>{spot.name}</TableCell>
+            <TableCell>{spot.address}</TableCell>
             <TableCell>{spot.description}</TableCell>
+            <TableCell>{spot.bustLevel}</TableCell>
           </TableRow>
         ))}
       </TableBody>
