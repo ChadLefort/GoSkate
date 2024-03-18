@@ -2,55 +2,66 @@
 
 import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
-import { ChangeEvent, useState } from 'react';
 import { Input, Textarea } from '@nextui-org/input';
 import { Button } from '@nextui-org/button';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { addSpot } from '@/actions/spot-actions';
 import { title } from '@/components/primitives';
 
+type Inputs = {
+  name: string;
+  description: string;
+};
+
 export default function AddSpotPage() {
-  const [nameInput, setNameInput] = useState('');
-  const [descriptionInput, setDescriptionInput] = useState('');
   const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting, isValid },
+  } = useForm<Inputs>({ mode: 'onBlur' });
 
-  const handleNameInput = (e: ChangeEvent<HTMLInputElement>) => {
-    setNameInput(e.target.value);
-  };
-
-  const handleDescriptionInput = (e: ChangeEvent<HTMLInputElement>) => {
-    setDescriptionInput(e.target.value);
-  };
-
-  const handleSumbit = () => {
-    addSpot({ name: nameInput, description: descriptionInput });
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    addSpot(data);
     router.push('/spots');
   };
 
   return (
     <>
       <h1 className={clsx(title(), 'mb-6')}>Add Spots</h1>
-      <Input
-        type="name"
-        label="Name"
-        value={nameInput}
-        onChange={handleNameInput}
-      />
-      <Textarea
-        label="Description"
-        placeholder="Enter your description"
-        value={descriptionInput}
-        onChange={handleDescriptionInput}
-      />
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+        <Input
+          className="mb-4"
+          type="name"
+          label="Name"
+          isRequired
+          {...register('name', { required: true })}
+          isInvalid={errors.name?.type === 'required'}
+          errorMessage={errors.name?.type === 'required' && 'Name is required'}
+        />
+        <Textarea
+          className="mb-4"
+          label="Description"
+          placeholder="Enter your description"
+          isRequired
+          {...register('description', { required: true })}
+          isInvalid={errors.description?.type === 'required'}
+          errorMessage={
+            errors.description?.type === 'required' && 'Description is required'
+          }
+        />
 
-      <Button
-        size="lg"
-        variant="shadow"
-        className="max-w-none xl:max-w-xs"
-        onClick={handleSumbit}
-      >
-        Add Spot
-      </Button>
+        <Button
+          size="lg"
+          variant="shadow"
+          type="submit"
+          className="max-w-none xl:max-w-xs"
+          isDisabled={isSubmitting || !isValid}
+        >
+          Add Spot
+        </Button>
+      </form>
     </>
   );
 }
