@@ -13,8 +13,6 @@ const db: PostgresJsDatabase = drizzle(queryClient, {
   logger: true,
 });
 
-type Dates = { createdAt: string; updatedAt: string | null };
-
 const generateSpotRows = (count: number): UpsertSpot[] => {
   const rows: UpsertSpot[] = [];
 
