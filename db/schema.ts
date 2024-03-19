@@ -6,10 +6,12 @@ import { point } from './geometryType';
 export const spot = pgTable('spot', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: text('name').notNull(),
+  slug: text('slug').notNull(),
   description: text('description').notNull(),
   address: text('address').notNull(),
   bustLevel: smallint('bust_level').default(0).notNull(),
   location: point('location', { srId: 4326 }),
+  userId: text('userId').notNull(),
   createdAt: text('created_at')
     .notNull()
     .default(sql`now()`),

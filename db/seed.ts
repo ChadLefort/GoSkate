@@ -13,18 +13,21 @@ const db: PostgresJsDatabase = drizzle(queryClient, {
   logger: true,
 });
 
-const generateSpotRows = (count: number): UpsertSpot[] => {
-  const rows: UpsertSpot[] = [];
+const generateSpotRows = (count: number): (UpsertSpot & { slug: string })[] => {
+  const rows: (UpsertSpot & { slug: string })[] = [];
 
   for (let i = 0; i < count; i++) {
     const [lat, lng] = faker.location.nearbyGPSCoordinate();
+    const name = faker.location.city();
 
     rows.push({
-      name: faker.location.city(),
+      name,
+      slug: name.toLowerCase().replace(/\s/g, '-'),
       description: faker.lorem.paragraph(),
       address: faker.location.streetAddress(),
       bustLevel: faker.number.int({ min: 0, max: 10 }),
       location: { lat, lng },
+      userId: `user_${faker.string.alphanumeric({ length: 27 })}`,
     });
   }
 

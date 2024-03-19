@@ -12,13 +12,19 @@ import { Input } from '@nextui-org/input';
 import { link as linkStyles } from '@nextui-org/theme';
 import NextLink from 'next/link';
 import clsx from 'clsx';
+import { OrganizationSwitcher } from '@clerk/nextjs';
+import { auth, UserButton } from '@clerk/nextjs';
 
 import { siteConfig } from '@/config/site';
 import { ThemeSwitch } from '@/components/theme-switch';
 import { SearchIcon } from '@/components/icons';
 import { Logo } from '@/components/icons';
 
+import { SignInButton } from './sign-in-button';
+
 export const Navbar = () => {
+  const { userId, orgId } = auth();
+
   const searchInput = (
     <Input
       aria-label="Search"
@@ -70,6 +76,14 @@ export const Navbar = () => {
           <ThemeSwitch />
         </NavbarItem>
         <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
+        {userId ? (
+          <>
+            {orgId && <OrganizationSwitcher hidePersonal={true} />}
+            <UserButton afterSignOutUrl="/" />
+          </>
+        ) : (
+          <SignInButton />
+        )}
       </NavbarContent>
 
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
