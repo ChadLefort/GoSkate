@@ -18,9 +18,11 @@ export default async function SpotsPage() {
       <div className="flex justify-between align-middle mb-6">
         <h1 className={title()}>Spots</h1>
         {userId && (
-          <Button size="lg" variant="shadow">
-            <NextLink href="/spots/add">Add Spots</NextLink>
-          </Button>
+          <NextLink href="/spots/add">
+            <Button size="lg" variant="shadow">
+              Add Spots
+            </Button>
+          </NextLink>
         )}
       </div>
 

@@ -7,13 +7,17 @@ import { usePathname } from 'next/navigation';
 export const SignInButton = () => {
   const pathname = usePathname();
 
-  return (
-    <Button size="md" variant="shadow">
-      {pathname === '/sign-in' ? (
-        <NextLink href="/sign-up">Sign Up</NextLink>
-      ) : (
-        <NextLink href="/sign-in">Sign In</NextLink>
-      )}
-    </Button>
+  return pathname === '/sign-in' ? (
+    <NextLink href="/sign-up">
+      <Button size="md" variant="shadow">
+        Sign Up
+      </Button>
+    </NextLink>
+  ) : (
+    <NextLink href="/sign-in">
+      <Button size="md" variant="shadow">
+        Sign In
+      </Button>
+    </NextLink>
   );
 };
