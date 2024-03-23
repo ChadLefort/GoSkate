@@ -21,8 +21,16 @@ export default function AddSpotPage() {
     register,
     handleSubmit,
     control,
-    formState: { errors, isSubmitting, isValid },
-  } = useForm<Inputs>({ mode: 'onBlur' });
+    formState: { defaultValues, errors, isSubmitting, isValid },
+  } = useForm<Inputs>({
+    mode: 'onBlur',
+    defaultValues: {
+      name: '',
+      address: '',
+      description: '',
+      bustLevel: 0,
+    },
+  });
 
   const onSubmit: SubmitHandler<UpsertSpot> = (data) => {
     addSpot(data);
@@ -38,22 +46,24 @@ export default function AddSpotPage() {
             className="max-w-3xl mb-4"
             label="Name"
             isRequired
-            {...register('name', { required: true })}
+            defaultValue={defaultValues?.name}
             isInvalid={errors.name?.type === 'required'}
             errorMessage={
               errors.name?.type === 'required' && 'Name is required'
             }
+            {...register('name', { required: true })}
           />
 
           <Input
             className="max-w-3xl mb-4"
             label="Address"
             isRequired
-            {...register('address', { required: true })}
-            isInvalid={errors.name?.type === 'required'}
+            defaultValue={defaultValues?.address}
+            isInvalid={errors.address?.type === 'required'}
             errorMessage={
-              errors.name?.type === 'required' && 'Address is required'
+              errors.address?.type === 'required' && 'Address is required'
             }
+            {...register('address', { required: true })}
           />
 
           <Textarea
@@ -61,17 +71,19 @@ export default function AddSpotPage() {
             label="Description"
             placeholder="Enter your description"
             isRequired
-            {...register('description', { required: true })}
+            defaultValue={defaultValues?.description}
             isInvalid={errors.description?.type === 'required'}
             errorMessage={
               errors.description?.type === 'required' &&
               'Description is required'
             }
+            {...register('description', { required: true })}
           />
 
           <Controller
             name="bustLevel"
             control={control}
+            defaultValue={defaultValues?.bustLevel}
             render={({ field }) => (
               <Slider
                 size="md"

@@ -14,6 +14,7 @@ export default function Map() {
   return (
     <MapGL
       mapboxAccessToken={mapboxToken}
+      reuseMaps
       mapStyle={mapboxStyle}
       initialViewState={{
         latitude,
