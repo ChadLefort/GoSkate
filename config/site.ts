@@ -19,8 +19,8 @@ export const siteConfig = {
   ],
   navMenuItems: [
     {
-      label: 'Profile',
-      href: '/profile',
+      label: 'Home',
+      href: '/',
     },
     {
       label: 'Spots',
@@ -29,10 +29,6 @@ export const siteConfig = {
     {
       label: 'About',
       href: '/about',
-    },
-    {
-      label: 'Logout',
-      href: '/logout',
     },
   ],
   links: {
