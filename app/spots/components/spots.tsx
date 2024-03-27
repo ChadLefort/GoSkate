@@ -9,7 +9,6 @@ import {
   TableRow,
 } from '@nextui-org/table';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 
 import type { Spot } from '@/actions/spot-actions';
 
@@ -20,14 +19,9 @@ type Props = {
 export default function Spots({ spots }: Props) {
   const router = useRouter();
   const gotoSpot = (slug: string) => router.push(`/spots/${slug}`);
-  const [selectedKeys, setSelectedKeys] = useState(new Set(['2']));
 
   return (
-    <Table
-      aria-label="A table of skate spots"
-      selectionMode="single"
-      selectedKeys={selectedKeys}
-    >
+    <Table aria-label="A table of skate spots" selectionMode="single">
       <TableHeader>
         <TableColumn width={20}>Name</TableColumn>
         <TableColumn width={70}>Address</TableColumn>
@@ -36,7 +30,11 @@ export default function Spots({ spots }: Props) {
 
       <TableBody emptyContent={'No rows to display.'}>
         {spots.map((spot) => (
-          <TableRow key={spot.id} onClick={() => gotoSpot(spot.slug)}>
+          <TableRow
+            key={spot.id}
+            className="cursor-pointer"
+            onClick={() => gotoSpot(spot.slug)}
+          >
             <TableCell>{spot.name}</TableCell>
             <TableCell>{spot.address}</TableCell>
             <TableCell>{spot.bustLevel}</TableCell>

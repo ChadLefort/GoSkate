@@ -1,6 +1,6 @@
 import NextLink from 'next/link';
 import { Button } from '@nextui-org/button';
-import { auth } from '@clerk/nextjs';
+import { auth } from '@clerk/nextjs/server';
 
 import { title } from '@/components/primitives';
 import { getSpots } from '@/actions/spot-actions';

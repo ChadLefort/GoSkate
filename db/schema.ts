@@ -1,4 +1,4 @@
-import { pgTable, smallint, text, uuid } from 'drizzle-orm/pg-core';
+import { json, pgTable, smallint, text, uuid } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 
 import { point } from './geometryType';
@@ -18,4 +18,17 @@ export const spot = pgTable('spot', {
   updatedAt: text('updated_at')
     .notNull()
     .default(sql`now()`),
+});
+
+export const user = pgTable('user', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: text('userId').notNull(),
+  data: json('data').notNull(),
+  createdAt: text('created_at')
+    .notNull()
+    .default(sql`now()`),
+  updatedAt: text('updated_at')
+    .notNull()
+    .default(sql`now()`),
+  deletedAt: text('deleted_at'),
 });
