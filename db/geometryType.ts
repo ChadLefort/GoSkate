@@ -1,10 +1,7 @@
 import { customType } from 'drizzle-orm/pg-core';
 import { Geometry } from 'wkx';
 
-export interface Point {
-  lat: number;
-  lng: number;
-}
+import type { Point } from '@/types/point';
 
 interface Coordinate {
   type: string;

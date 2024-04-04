@@ -19,7 +19,7 @@ export const getSpots = async () => {
 
 export const getSpotBySlug = async (slug: string) => {
   const spot = await db.query.spot.findFirst({
-    where: (spot, { eq }) => eq(spot.slug, slug),
+    where: (spot, { eq }) => eq(spot.slug, slug.toLowerCase()),
   });
 
   return spot;
@@ -28,13 +28,22 @@ export const getSpotBySlug = async (slug: string) => {
 export const addSpot = async (data: UpsertSpot) => {
   const { userId } = await checkLoggedIn();
 
-  await db.insert(spot).values({
-    ...data,
-    slug: data.name.toLowerCase().replace(/\s/g, '-'),
-    userId,
+  const slug = data.name.toLowerCase().replace(/\s/g, '-');
+  const existingSpot = await db.query.spot.findFirst({
+    where: (spot, { eq }) => eq(spot.slug, slug),
   });
 
-  revalidatePath('/spots');
+  if (existingSpot) {
+    return { error: 'Spot already exists' };
+  } else {
+    await db.insert(spot).values({
+      ...data,
+      slug,
+      userId,
+    });
+
+    revalidatePath('/spots');
+  }
 };
 
 export const deleteSpot = async (id: string) => {
