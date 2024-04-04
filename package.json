@@ -10,7 +10,9 @@
     "format": "prettier --write '*/**/*.{js,jsx,ts,tsx,json,css,md}'",
     "drizzle:migrate": "drizzle-kit generate:pg",
     "drizzle:push": "drizzle-kit push:pg",
-    "drizzle:seed": "tsx ./db/seed.ts"
+    "drizzle:seed": "tsx ./db/seed.ts",
+    "_ngrok": "ngrok http http://localhost:3000 --domain=$NGROK_DOMAIN",
+    "public": "dotenv -- npm run _ngrok"
   },
   "dependencies": {
     "@clerk/nextjs": "^5.0.0-beta.37",
@@ -35,6 +37,8 @@
     "@nextui-org/theme": "^2.1.18",
     "@react-aria/ssr": "^3.9.2",
     "@react-aria/visually-hidden": "^3.8.10",
+    "@stripe/react-stripe-js": "^2.6.2",
+    "@stripe/stripe-js": "^3.2.0",
     "@types/mapbox-gl": "^3.1.0",
     "clsx": "^2.1.0",
     "drizzle-orm": "^0.30.2",
@@ -48,6 +52,7 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.51.1",
     "react-map-gl": "^7.1.7",
+    "stripe": "^14.23.0",
     "svix": "^1.21.0",
     "tailwind-variants": "^0.1.18",
     "wkx": "^0.5.0",
@@ -61,6 +66,7 @@
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "autoprefixer": "^10.4.18",
     "dotenv": "^16.4.5",
+    "dotenv-cli": "^7.4.1",
     "drizzle-kit": "^0.20.14",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.1.3",
