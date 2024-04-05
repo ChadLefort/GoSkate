@@ -18,8 +18,10 @@ import { addSpot, getSpotBySlug } from '@/actions/spot-actions';
 import { title } from '@/components/primitives';
 import type { Spot, UpsertSpot } from '@/actions/spot-actions';
 import type { Point } from '@/types/point';
+import { useUploadThing } from '@/utils/uploadthing';
 
 import Map from '../components/map';
+import Upload from '../components/upload';
 
 const AddressAutofill = dynamic(
   async () => {
@@ -51,6 +53,13 @@ const formSchema = z.object({
 export default function AddSpotPage() {
   const router = useRouter();
   const [coordinates, setCoordinates] = useState<Point>();
+  const [files, setFiles] = useState<File[]>([]);
+  const { startUpload, permittedFileInfo, isUploading } =
+    useUploadThing('spotImages');
+
+  const fileTypes = permittedFileInfo?.config
+    ? Object.keys(permittedFileInfo?.config)
+    : [];
 
   const [token, setToken] = useState('');
   const {
@@ -69,9 +78,14 @@ export default function AddSpotPage() {
     resolver: zodResolver(formSchema),
   });
 
-  const onSubmit: SubmitHandler<UpsertSpot> = (data) => {
+  const onSubmit: SubmitHandler<UpsertSpot> = async (data) => {
     if (coordinates) {
-      addSpot({ ...data, location: coordinates });
+      const spot = await addSpot({ ...data, location: coordinates });
+
+      if (spot) {
+        await startUpload(files, { spotId: spot.id });
+      }
+
       router.push('/spots');
     }
   };
@@ -102,82 +116,90 @@ export default function AddSpotPage() {
       <h1 className={clsx(title(), 'mb-6')}>Add Spots</h1>
 
       {token && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-4 h-full">
-          <form
-            className="flex flex-col gap-4"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <Input
-              className="max-w-3xl mb-4"
-              label="Name"
-              isRequired
-              defaultValue={defaultValues?.name}
-              isInvalid={Boolean(errors.name)}
-              errorMessage={errors.name?.message}
-              {...register('name')}
-            />
-
-            <AddressAutofill accessToken={token} onRetrieve={handleRetrieve}>
+        <>
+          <div className="grid grid-cols-1">
+            <Upload files={files} setFiles={setFiles} fileTypes={fileTypes} />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-4 h-full">
+            <form
+              className="flex flex-col gap-4"
+              onSubmit={handleSubmit(onSubmit)}
+            >
               <Input
                 className="max-w-3xl mb-4"
-                label="Address"
+                label="Name"
                 isRequired
-                defaultValue={defaultValues?.address}
-                isInvalid={Boolean(errors.address)}
-                errorMessage={errors.address?.message}
-                {...register('address')}
+                defaultValue={defaultValues?.name}
+                isInvalid={Boolean(errors.name)}
+                errorMessage={errors.name?.message}
+                {...register('name')}
               />
-            </AddressAutofill>
 
-            <Textarea
-              className="max-w-3xl mb-4"
-              label="Description"
-              placeholder="Enter your description"
-              isRequired
-              defaultValue={defaultValues?.description}
-              isInvalid={Boolean(errors.description)}
-              errorMessage={errors.description?.message}
-              {...register('description')}
-            />
-
-            <Controller
-              name="bustLevel"
-              control={control}
-              defaultValue={defaultValues?.bustLevel}
-              render={({ field }) => (
-                <Slider
-                  size="md"
-                  step={1}
-                  color="foreground"
-                  label="Bust Level"
-                  showSteps={true}
-                  maxValue={10}
-                  minValue={0}
-                  defaultValue={0.4}
+              <AddressAutofill accessToken={token} onRetrieve={handleRetrieve}>
+                <Input
                   className="max-w-3xl mb-4"
-                  {...field}
+                  label="Address"
+                  isRequired
+                  defaultValue={defaultValues?.address}
+                  isInvalid={Boolean(errors.address)}
+                  errorMessage={errors.address?.message}
+                  {...register('address')}
                 />
-              )}
-            />
+              </AddressAutofill>
 
-            <Button
-              size="lg"
-              variant="shadow"
-              type="submit"
-              className="max-w-none xl:max-w-xs"
-              isLoading={isSubmitting}
-              isDisabled={isSubmitting || !isValid}
-            >
-              Add Spot
-            </Button>
-          </form>
+              <Textarea
+                className="max-w-3xl mb-4"
+                label="Description"
+                placeholder="Enter your description"
+                isRequired
+                defaultValue={defaultValues?.description}
+                isInvalid={Boolean(errors.description)}
+                errorMessage={errors.description?.message}
+                {...register('description')}
+              />
 
-          <Card>
-            <CardBody className="min-h-96">
-              <Map coordinates={coordinates} setCoordinates={setCoordinates} />
-            </CardBody>
-          </Card>
-        </div>
+              <Controller
+                name="bustLevel"
+                control={control}
+                defaultValue={defaultValues?.bustLevel}
+                render={({ field }) => (
+                  <Slider
+                    size="md"
+                    step={1}
+                    color="foreground"
+                    label="Bust Level"
+                    showSteps={true}
+                    maxValue={10}
+                    minValue={0}
+                    defaultValue={0.4}
+                    className="max-w-3xl mb-4"
+                    {...field}
+                  />
+                )}
+              />
+
+              <Button
+                size="lg"
+                variant="shadow"
+                type="submit"
+                className="max-w-none xl:max-w-xs"
+                isLoading={isSubmitting || isUploading}
+                isDisabled={isSubmitting || isUploading || !isValid}
+              >
+                Add Spot
+              </Button>
+            </form>
+
+            <Card>
+              <CardBody className="min-h-96">
+                <Map
+                  coordinates={coordinates}
+                  setCoordinates={setCoordinates}
+                />
+              </CardBody>
+            </Card>
+          </div>
+        </>
       )}
     </>
   );

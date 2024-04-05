@@ -40,6 +40,7 @@
     "@stripe/react-stripe-js": "^2.6.2",
     "@stripe/stripe-js": "^3.2.0",
     "@types/mapbox-gl": "^3.1.0",
+    "@uploadthing/react": "^6.4.1",
     "clsx": "^2.1.0",
     "drizzle-orm": "^0.30.2",
     "framer-motion": "^11.0.14 ",
@@ -55,6 +56,7 @@
     "stripe": "^14.23.0",
     "svix": "^1.21.0",
     "tailwind-variants": "^0.1.18",
+    "uploadthing": "^6.7.0",
     "wkx": "^0.5.0",
     "zod": "^3.22.4"
   },

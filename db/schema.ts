@@ -32,3 +32,17 @@ export const user = pgTable('user', {
     .default(sql`now()`),
   deletedAt: text('deleted_at'),
 });
+
+export const spotImage = pgTable('spot_image', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  spotId: uuid('spot_id').notNull(),
+  userId: text('user_id').notNull(),
+  url: text('url').notNull(),
+  createdAt: text('created_at')
+    .notNull()
+    .default(sql`now()`),
+  updatedAt: text('updated_at')
+    .notNull()
+    .default(sql`now()`),
+  deletedAt: text('deleted_at'),
+});

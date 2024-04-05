@@ -33,16 +33,19 @@ export const addSpot = async (data: UpsertSpot) => {
     where: (spot, { eq }) => eq(spot.slug, slug),
   });
 
-  if (existingSpot) {
-    return { error: 'Spot already exists' };
-  } else {
-    await db.insert(spot).values({
-      ...data,
-      slug,
-      userId,
-    });
+  if (!existingSpot) {
+    const [newSpot] = await db
+      .insert(spot)
+      .values({
+        ...data,
+        slug,
+        userId,
+      })
+      .returning();
 
     revalidatePath('/spots');
+
+    return newSpot;
   }
 };
 

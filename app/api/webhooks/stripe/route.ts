@@ -68,5 +68,5 @@ export async function POST(req: Request) {
   }
 
   // Return a response to acknowledge receipt of the event.
-  return Response.json({ message: 'Received' }, { status: 200 });
+  return Response.json({ message: 'Stripe webhook received' }, { status: 200 });
 }

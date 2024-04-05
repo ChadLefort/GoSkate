@@ -38,8 +38,10 @@ export const createCheckoutSession = async (
       cancel_url: `${origin}/donate`,
       ui_mode: 'hosted',
       payment_method_configuration: process.env.STRIPE_PAYMENT_METHOD_CONFIG_ID,
-      metadata: {
-        userId: user?.id ?? null,
+      payment_intent_data: {
+        metadata: {
+          userId: user?.id ?? null,
+        },
       },
     });
 
