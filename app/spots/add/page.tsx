@@ -19,6 +19,7 @@ import { title } from '@/components/primitives';
 import type { Spot, UpsertSpot } from '@/actions/spot-actions';
 import type { Point } from '@/types/point';
 import { useUploadThing } from '@/utils/uploadthing';
+import { BACKGROUND_COLOR, PRIMARY_BRAND_COLOR } from '@/config';
 
 import Map from '../components/map';
 import Upload from '../components/upload';
@@ -46,8 +47,7 @@ const formSchema = z.object({
       message: `${slug} is already taken`,
     })),
   address: z.string().min(1, 'Address is required'),
-  description: z.string(),
-  bustLevel: z.number().min(0, 'Bust level must be at least 0'),
+  description: z.string().min(1, 'Description is required'),
 });
 
 export default function AddSpotPage() {
@@ -117,12 +117,9 @@ export default function AddSpotPage() {
 
       {token && (
         <>
-          <div className="grid grid-cols-1">
-            <Upload files={files} setFiles={setFiles} fileTypes={fileTypes} />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-4 h-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-4 h-3/4">
             <form
-              className="flex flex-col gap-4"
+              className="flex flex-col justify-center gap-4"
               onSubmit={handleSubmit(onSubmit)}
             >
               <Input
@@ -135,7 +132,21 @@ export default function AddSpotPage() {
                 {...register('name')}
               />
 
-              <AddressAutofill accessToken={token} onRetrieve={handleRetrieve}>
+              <AddressAutofill
+                accessToken={token}
+                onRetrieve={handleRetrieve}
+                theme={{
+                  variables: {
+                    colorPrimary: PRIMARY_BRAND_COLOR,
+                    colorBackground: '#27272a',
+                    colorBackgroundHover: '#52525b80',
+                    colorText: '#fff',
+                  },
+                }}
+                popoverOptions={{
+                  offset: 15,
+                }}
+              >
                 <Input
                   className="max-w-3xl mb-4"
                   label="Address"
@@ -178,11 +189,13 @@ export default function AddSpotPage() {
                 )}
               />
 
+              <label className="text-small">Images</label>
+              <Upload files={files} setFiles={setFiles} fileTypes={fileTypes} />
+
               <Button
                 size="lg"
                 variant="shadow"
                 type="submit"
-                className="max-w-none xl:max-w-xs"
                 isLoading={isSubmitting || isUploading}
                 isDisabled={isSubmitting || isUploading || !isValid}
               >
@@ -190,14 +203,17 @@ export default function AddSpotPage() {
               </Button>
             </form>
 
-            <Card>
-              <CardBody className="min-h-96">
-                <Map
-                  coordinates={coordinates}
-                  setCoordinates={setCoordinates}
-                />
-              </CardBody>
-            </Card>
+            <div className="flex flex-col">
+              <label className="text-small mb-3">Map Pin</label>
+              <Card className="flex-1 bg-default-100 hover:bg-default-300">
+                <CardBody>
+                  <Map
+                    coordinates={coordinates}
+                    setCoordinates={setCoordinates}
+                  />
+                </CardBody>
+              </Card>
+            </div>
           </div>
         </>
       )}

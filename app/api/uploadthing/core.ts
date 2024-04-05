@@ -8,7 +8,7 @@ import { addSpotImages } from '@/actions/spot-images.actions';
 const uploadThing = createUploadthing();
 
 export const ourFileRouter = {
-  spotImages: uploadThing({ image: { maxFileSize: '4MB', maxFileCount: 10 } })
+  spotImages: uploadThing({ image: { maxFileSize: '4MB', maxFileCount: 4 } })
     .input(z.object({ spotId: z.string() }))
     .middleware(async ({ input: { spotId } }) => {
       const { userId } = auth();

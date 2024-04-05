@@ -5,3 +5,5 @@ export const DEFAULT_AMOUNT = 5.0;
 export const MIN_AMOUNT = 1.0;
 export const MAX_AMOUNT = 100.0;
 export const AMOUNT_STEP = 1.0;
+export const PRIMARY_BRAND_COLOR = '#52525B';
+export const BACKGROUND_COLOR = '#111111';

@@ -7,6 +7,8 @@ import { button as buttonStyles, link as linkStyles } from '@nextui-org/theme';
 import { useTheme } from 'next-themes';
 import clsx from 'clsx';
 
+import { PRIMARY_BRAND_COLOR } from '@/config';
+
 export interface ProvidersProps {
   children: React.ReactNode;
 }
@@ -20,7 +22,7 @@ export function Clerk({ children }: ProvidersProps) {
       appearance={{
         baseTheme: theme === 'dark' && dark,
         variables: {
-          colorPrimary: '#52525B',
+          colorPrimary: PRIMARY_BRAND_COLOR,
           fontSize: '14px',
         },
         elements: {

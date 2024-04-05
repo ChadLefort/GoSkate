@@ -1,6 +1,6 @@
 'use client';
 
-import MapGL, { GeolocateControl, Marker, MarkerDragEvent } from 'react-map-gl';
+import MapGL, { Marker, MarkerDragEvent } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -70,7 +70,6 @@ export default function Map({ coordinates, setCoordinates }: MapProps) {
       >
         <Pin size={40} />
       </Marker>
-      <GeolocateControl />
     </MapGL>
   );
 }
