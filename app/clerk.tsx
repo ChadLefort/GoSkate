@@ -18,7 +18,6 @@ export function Clerk({ children }: ProvidersProps) {
 
   return (
     <ClerkProvider
-      // className="shadow-none"
       appearance={{
         baseTheme: theme === 'dark' && dark,
         variables: {
@@ -34,27 +33,33 @@ export function Clerk({ children }: ProvidersProps) {
             buttonStyles({
               variant: 'shadow',
               size: 'lg',
-            }),
-            'data-[active=true]:text-primary hover:text-primary active:text-primary focus:text-primary'
+            })
           ),
           socialButtonsIconButton: buttonStyles({
             variant: 'shadow',
             size: 'sm',
           }),
           badge: 'bg-primary',
+
+          userButtonPopoverActionButton: clsx(
+            linkStyles({
+              color: 'foreground',
+              size: 'sm',
+            }),
+            'data-[active=true]:text-primary hover:text-primary active:text-primary focus:text-primary'
+          ),
+          button: clsx(
+            linkStyles({
+              color: 'foreground',
+              size: 'sm',
+            })
+          ),
           button__danger: clsx(
             linkStyles({
               color: 'danger',
               size: 'sm',
             }),
             'data-[active=true]:text-danger-400 hover:text-danger-400 active:text-danger-400 focus:text-danger-400'
-          ),
-          button: clsx(
-            linkStyles({
-              color: 'foreground',
-              size: 'sm',
-            }),
-            'data-[active=true]:text-primary hover:text-primary active:text-primary focus:text-primary'
           ),
         },
       }}

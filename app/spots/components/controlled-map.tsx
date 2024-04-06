@@ -1,6 +1,11 @@
 'use client';
 
-import MapGL, { Marker, MarkerDragEvent } from 'react-map-gl';
+import MapGL, {
+  FullscreenControl,
+  Marker,
+  MarkerDragEvent,
+  NavigationControl,
+} from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -55,12 +60,19 @@ export default function Map({ coordinates, setCoordinates }: MapProps) {
     <MapGL
       {...viewState}
       mapboxAccessToken={mapboxToken}
-      reuseMaps
       mapStyle={mapboxStyle}
       onMove={(evt) => setViewState(evt.viewState)}
-      maxZoom={20}
-      minZoom={3}
+      onMoveEnd={(evt) =>
+        setCoordinates &&
+        setCoordinates({
+          lat: evt.viewState.latitude,
+          lng: evt.viewState.longitude,
+        })
+      }
     >
+      <NavigationControl position="top-left" />
+      <FullscreenControl position="top-right" />
+
       <Marker
         latitude={viewState.latitude}
         longitude={viewState.longitude}

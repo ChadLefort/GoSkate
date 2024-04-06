@@ -19,9 +19,9 @@ import { title } from '@/components/primitives';
 import type { Spot, UpsertSpot } from '@/actions/spot-actions';
 import type { Point } from '@/types/point';
 import { useUploadThing } from '@/utils/uploadthing';
-import { BACKGROUND_COLOR, PRIMARY_BRAND_COLOR } from '@/config';
+import { PRIMARY_BRAND_COLOR } from '@/config';
 
-import Map from '../components/map';
+import Map from '../components/controlled-map';
 import Upload from '../components/upload';
 
 const AddressAutofill = dynamic(
@@ -47,6 +47,10 @@ const formSchema = z.object({
       message: `${slug} is already taken`,
     })),
   address: z.string().min(1, 'Address is required'),
+  addressLine2: z.string().optional(),
+  city: z.string().min(1, 'City is required'),
+  state: z.string().min(1, 'State is required'),
+  zip: z.string().min(1, 'Zip is required'),
   description: z.string().min(1, 'Description is required'),
 });
 
@@ -72,6 +76,10 @@ export default function AddSpotPage() {
     defaultValues: {
       name: '',
       address: '',
+      addressLine2: '',
+      city: '',
+      state: '',
+      zip: '',
       description: '',
       bustLevel: 0,
     },
@@ -117,13 +125,13 @@ export default function AddSpotPage() {
 
       {token && (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-4 h-3/4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-4 h-full">
             <form
               className="flex flex-col justify-center gap-4"
               onSubmit={handleSubmit(onSubmit)}
             >
               <Input
-                className="max-w-3xl mb-4"
+                className="max-w-3xl mb-3"
                 label="Name"
                 isRequired
                 defaultValue={defaultValues?.name}
@@ -148,7 +156,7 @@ export default function AddSpotPage() {
                 }}
               >
                 <Input
-                  className="max-w-3xl mb-4"
+                  className="max-w-3xl mb-3"
                   label="Address"
                   isRequired
                   defaultValue={defaultValues?.address}
@@ -158,8 +166,53 @@ export default function AddSpotPage() {
                 />
               </AddressAutofill>
 
+              <Input
+                className="max-w-3xl mb-3"
+                label="Address Line 2"
+                placeholder="Address Line 2"
+                isInvalid={Boolean(errors.addressLine2)}
+                errorMessage={errors.addressLine2?.message}
+                autoComplete="address-line2"
+                {...register('addressLine2')}
+              />
+
+              <Input
+                className="max-w-3xl mb-3"
+                label="City"
+                isRequired
+                defaultValue={defaultValues?.city}
+                isInvalid={Boolean(errors.city)}
+                errorMessage={errors.city?.message}
+                autoComplete="address-level2"
+                {...register('city')}
+              />
+
+              <div className="flex mb-3">
+                <Input
+                  className="max-w-3xl me-3"
+                  label="State"
+                  isRequired
+                  defaultValue={defaultValues?.state}
+                  isInvalid={Boolean(errors.state)}
+                  errorMessage={errors.state?.message}
+                  autoComplete="address-level1"
+                  {...register('state')}
+                />
+
+                <Input
+                  className="max-w-3xl"
+                  label="Zip"
+                  isRequired
+                  defaultValue={defaultValues?.zip}
+                  isInvalid={Boolean(errors.zip)}
+                  errorMessage={errors.zip?.message}
+                  autoComplete="postal-code"
+                  {...register('zip')}
+                />
+              </div>
+
               <Textarea
-                className="max-w-3xl mb-4"
+                className="max-w-3xl"
                 label="Description"
                 placeholder="Enter your description"
                 isRequired
@@ -183,7 +236,7 @@ export default function AddSpotPage() {
                     maxValue={10}
                     minValue={0}
                     defaultValue={0.4}
-                    className="max-w-3xl mb-4"
+                    className="max-w-3xl"
                     {...field}
                   />
                 )}
@@ -205,14 +258,7 @@ export default function AddSpotPage() {
 
             <div className="flex flex-col">
               <label className="text-small mb-3">Map Pin</label>
-              <Card className="flex-1 bg-default-100 hover:bg-default-300">
-                <CardBody>
-                  <Map
-                    coordinates={coordinates}
-                    setCoordinates={setCoordinates}
-                  />
-                </CardBody>
-              </Card>
+              <Map coordinates={coordinates} setCoordinates={setCoordinates} />
             </div>
           </div>
         </>

@@ -9,8 +9,12 @@ export const spot = pgTable('spot', {
   slug: text('slug').notNull(),
   description: text('description').notNull(),
   address: text('address').notNull(),
+  addressLine2: text('address_line_2'),
+  city: text('city').notNull(),
+  state: text('state').notNull(),
+  zip: text('zip').notNull(),
   bustLevel: smallint('bust_level').default(0).notNull(),
-  location: point('location', { srId: 4326 }),
+  location: point('location', { srId: 4326 }).notNull(),
   userId: text('userId').notNull(),
   createdAt: text('created_at')
     .notNull()

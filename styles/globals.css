@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.mapboxgl-canvas {
+  @apply rounded-xl;
+}
+
+.mapboxgl-ctrl-attrib-inner {
+  @apply hidden;
+}
