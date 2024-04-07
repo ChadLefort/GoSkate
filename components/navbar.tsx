@@ -10,7 +10,6 @@ import {
   Navbar as NextUINavbar,
 } from '@nextui-org/navbar';
 import { Link } from '@nextui-org/link';
-import { Input } from '@nextui-org/input';
 import { link as linkStyles } from '@nextui-org/theme';
 import clsx from 'clsx';
 import NextLink from 'next/link';
@@ -19,13 +18,13 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { IconMedal } from '@tabler/icons-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@nextui-org/popover';
-import { IconSearch } from '@tabler/icons-react';
 
 import { siteConfig } from '@/config/site';
 import { ThemeSwitch } from '@/components/theme-switch';
 import { Logo } from '@/components/icons';
 
 import { SignInButton } from './sign-in-button';
+import { Search } from './search';
 
 export const Navbar = () => {
   const router = useRouter();
@@ -38,22 +37,6 @@ export const Navbar = () => {
     handleMenuToggle();
     signOut(() => router.push('/'));
   };
-
-  const searchInput = (
-    <Input
-      aria-label="Search"
-      classNames={{
-        inputWrapper: 'bg-default-100',
-        input: 'text-sm',
-      }}
-      labelPlacement="outside"
-      placeholder="Search Spots"
-      startContent={
-        <IconSearch className="text-base text-default-400 pointer-events-none flex-shrink-0" />
-      }
-      type="search"
-    />
-  );
 
   return (
     <NextUINavbar
@@ -95,7 +78,9 @@ export const Navbar = () => {
         <NavbarItem className="hidden sm:flex gap-2">
           <ThemeSwitch />
         </NavbarItem>
-        <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
+        <NavbarItem className="hidden lg:flex">
+          <Search />
+        </NavbarItem>
         {user ? (
           <>
             <UserButton afterSignOutUrl="/" />
@@ -124,7 +109,7 @@ export const Navbar = () => {
       </NavbarContent>
 
       <NavbarMenu>
-        {searchInput}
+        <Search />
         <div className="mx-4 mt-2 flex flex-col gap-2">
           <>
             {siteConfig.navMenuItems.map((item, index) => (

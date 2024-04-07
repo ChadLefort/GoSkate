@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { desc, eq } from 'drizzle-orm';
+import { desc, eq, ilike } from 'drizzle-orm';
 
 import db from '@/db/drizzle';
 import { spot } from '@/db/schema';
@@ -26,6 +26,20 @@ export const getSpotBySlug = async (slug: string) => {
   });
 
   return spot;
+};
+
+export const searchSpots = async (searchTerm?: string) => {
+  if (!searchTerm) {
+    return await getSpots();
+  }
+
+  const data = await db
+    .select()
+    .from(spot)
+    .where(ilike(spot.name, `%${searchTerm}%`))
+    .orderBy(desc(spot.createdAt));
+
+  return data;
 };
 
 export const addSpot = async (data: UpsertSpot) => {

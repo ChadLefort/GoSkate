@@ -3,13 +3,23 @@ import { Button } from '@nextui-org/button';
 import { auth } from '@clerk/nextjs/server';
 
 import { title } from '@/components/primitives';
-import { getSpots } from '@/actions/spot-actions';
+import { getSpots, searchSpots, Spot } from '@/actions/spot-actions';
 
 import Spots from './components/spots';
 
-export default async function SpotsPage() {
-  const data = await getSpots();
+export default async function SpotsPage({
+  searchParams: { search },
+}: {
+  searchParams: { search: string };
+}) {
+  let data: Spot[] = [];
   const { userId } = auth();
+
+  if (search) {
+    data = await searchSpots(search);
+  } else {
+    data = await getSpots();
+  }
 
   return (
     <>
