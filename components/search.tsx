@@ -10,7 +10,6 @@ import { searchSpots, Spot } from '@/actions/spot-actions';
 
 export const Search = () => {
   const autocompleteRef = useRef<HTMLInputElement | null>(null);
-  const [selected, setSelected] = useState<Key | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const router = useRouter();
   const list = useAsyncList<Spot>({
@@ -24,32 +23,32 @@ export const Search = () => {
   });
 
   const handleSelection = (key: Key | null) => {
-    setSelected(key);
+    if (key && !submitted) {
+      list.setFilterText(
+        list.items.find((item) => item.slug === key)?.name || ''
+      );
 
-    // Clicking on the item should redirect to the spot page
-    if (!submitted && key) {
-      router.push(`/spots/${key}`);
       autocompleteRef.current?.blur();
+      router.push(`/spots/${key}`);
     }
   };
 
   useEffect(() => {
-    // The user has submitted the search with enter key on a selected item
-    if (selected && submitted) {
-      router.push(`/spots/${selected}`);
-      setSubmitted(false);
-      list.setFilterText('');
+    if (submitted) {
       autocompleteRef.current?.blur();
-    }
+      setSubmitted(false);
 
-    // The user has submitted the search with enter key on a custom value
-    if (!selected && submitted) {
-      router.push(`/spots?search=${list.filterText}`);
-      setSubmitted(false);
-      list.setFilterText('');
-      autocompleteRef.current?.blur();
+      const selectedSpot = list.items.find(
+        (item) => item.name === list.filterText
+      );
+
+      if (selectedSpot) {
+        router.push(`/spots/${selectedSpot.slug}`);
+      } else {
+        router.push(`/spots?search=${list.filterText}`);
+      }
     }
-  }, [submitted, selected, router, list]);
+  }, [submitted, router, list]);
 
   return (
     <Autocomplete
