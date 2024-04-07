@@ -9,3 +9,15 @@
 .mapboxgl-ctrl-attrib-inner {
   @apply hidden;
 }
+
+.mapboxgl-popup-tip {
+  @apply border-b-default-600 !important;
+}
+
+.mapboxgl-popup-content {
+  @apply rounded-xl bg-default-600 p-4 !important;
+}
+
+.mapboxgl-popup-close-button {
+  @apply right-1 text-primary !important;
+}

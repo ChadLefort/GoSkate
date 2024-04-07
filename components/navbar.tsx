@@ -17,10 +17,12 @@ import NextLink from 'next/link';
 import { useClerk, UserButton, useUser } from '@clerk/nextjs';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { IconMedal } from '@tabler/icons-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@nextui-org/popover';
+import { IconSearch } from '@tabler/icons-react';
 
 import { siteConfig } from '@/config/site';
 import { ThemeSwitch } from '@/components/theme-switch';
-import { SearchIcon } from '@/components/icons';
 import { Logo } from '@/components/icons';
 
 import { SignInButton } from './sign-in-button';
@@ -47,7 +49,7 @@ export const Navbar = () => {
       labelPlacement="outside"
       placeholder="Search Spots"
       startContent={
-        <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
+        <IconSearch className="text-base text-default-400 pointer-events-none flex-shrink-0" />
       }
       type="search"
     />
@@ -94,7 +96,24 @@ export const Navbar = () => {
           <ThemeSwitch />
         </NavbarItem>
         <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
-        {user ? <UserButton afterSignOutUrl="/" /> : <SignInButton />}
+        {user ? (
+          <>
+            <UserButton afterSignOutUrl="/" />
+            <Popover placement="bottom">
+              <PopoverTrigger>
+                <IconMedal />
+              </PopoverTrigger>
+              <PopoverContent>
+                <div className="px-1 py-2">
+                  <div className="text-small font-bold">Premium User</div>
+                  <div className="text-tiny">Thanks for the support!</div>
+                </div>
+              </PopoverContent>
+            </Popover>
+          </>
+        ) : (
+          <SignInButton />
+        )}
       </NavbarContent>
 
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">

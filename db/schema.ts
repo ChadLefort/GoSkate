@@ -1,4 +1,12 @@
-import { json, pgTable, smallint, text, uuid } from 'drizzle-orm/pg-core';
+import {
+  boolean,
+  json,
+  pgTable,
+  smallint,
+  text,
+  timestamp,
+  uuid,
+} from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 
 import { point } from './geometryType';
@@ -16,25 +24,27 @@ export const spot = pgTable('spot', {
   bustLevel: smallint('bust_level').default(0).notNull(),
   location: point('location', { srId: 4326 }).notNull(),
   userId: text('userId').notNull(),
-  createdAt: text('created_at')
+  createdAt: timestamp('created_at')
     .notNull()
     .default(sql`now()`),
-  updatedAt: text('updated_at')
+  updatedAt: timestamp('updated_at')
     .notNull()
     .default(sql`now()`),
+  deletedAt: timestamp('deleted_at'),
 });
 
 export const user = pgTable('user', {
   id: uuid('id').defaultRandom().primaryKey(),
   userId: text('userId').notNull(),
   data: json('data').notNull(),
-  createdAt: text('created_at')
+  premium: boolean('premium').default(false).notNull(),
+  createdAt: timestamp('created_at')
     .notNull()
     .default(sql`now()`),
-  updatedAt: text('updated_at')
+  updatedAt: timestamp('updated_at')
     .notNull()
     .default(sql`now()`),
-  deletedAt: text('deleted_at'),
+  deletedAt: timestamp('deleted_at'),
 });
 
 export const spotImage = pgTable('spot_image', {
@@ -42,11 +52,11 @@ export const spotImage = pgTable('spot_image', {
   spotId: uuid('spot_id').notNull(),
   userId: text('user_id').notNull(),
   url: text('url').notNull(),
-  createdAt: text('created_at')
+  createdAt: timestamp('created_at')
     .notNull()
     .default(sql`now()`),
-  updatedAt: text('updated_at')
+  updatedAt: timestamp('updated_at')
     .notNull()
     .default(sql`now()`),
-  deletedAt: text('deleted_at'),
+  deletedAt: timestamp('deleted_at'),
 });

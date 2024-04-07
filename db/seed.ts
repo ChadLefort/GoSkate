@@ -26,7 +26,7 @@ const generateSpotRows = (count: number): (UpsertSpot & { slug: string })[] => {
     rows.push({
       name,
       slug: name.toLowerCase().replace(/\s/g, '-'),
-      description: faker.lorem.paragraph(),
+      description: faker.lorem.paragraphs(5),
       address: faker.location.streetAddress(),
       addressLine2: faker.location.secondaryAddress(),
       city: faker.location.city(),

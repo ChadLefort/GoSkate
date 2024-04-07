@@ -4,6 +4,7 @@ import { Metadata } from 'next';
 import { Link } from '@nextui-org/link';
 import clsx from 'clsx';
 import type { Viewport } from 'next';
+import { IconHeart } from '@tabler/icons-react';
 
 import { siteConfig } from '@/config/site';
 import { fontSans } from '@/config/fonts';
@@ -61,7 +62,10 @@ export default function RootLayout({
                 href="https://chadlefort.com"
                 title="Chad Lefort's Portfolio"
               >
-                <span className="text-default-600">Made by</span>
+                <span className="text-default-600 flex">
+                  Made with <IconHeart className="text-red-500 m-1" size={16} />{' '}
+                  by
+                </span>
                 <p className="text-primary">Chad Lefort</p>
               </Link>
             </footer>

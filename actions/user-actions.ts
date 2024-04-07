@@ -29,6 +29,18 @@ export const addUser = async (data: UpsertUser) => {
   await db.insert(user).values(data);
 };
 
-export const editUser = async (id: string, data: UpsertUser) => {
-  await db.update(user).set({ data: data }).where(eq(user.userId, id));
+export const editUser = async (
+  id: string,
+  { data, premium }: Partial<UpsertUser>
+) => {
+  const updateQuery = db.update(user);
+  const updatedAt = new Date();
+
+  if (data) {
+    await updateQuery.set({ data, updatedAt }).where(eq(user.userId, id));
+  }
+
+  if (premium !== undefined) {
+    await updateQuery.set({ premium, updatedAt }).where(eq(user.userId, id));
+  }
 };

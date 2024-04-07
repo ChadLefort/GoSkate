@@ -1,6 +1,7 @@
 import type { Stripe } from 'stripe';
 
 import { stripe } from '@/lib/stripe';
+import { editUser } from '@/actions/user-actions';
 
 export async function POST(req: Request) {
   let event: Stripe.Event;
@@ -52,6 +53,10 @@ export async function POST(req: Request) {
           break;
         case 'payment_intent.succeeded':
           data = event.data.object as Stripe.PaymentIntent;
+
+          await editUser(data.metadata.userId, { premium: true });
+
+          console.log(`💰 PaymentIntent UserID: ${data.metadata.userId}`);
           console.log(`💰 PaymentIntent status: ${data.status}`);
           break;
         default:

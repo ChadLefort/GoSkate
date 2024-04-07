@@ -10,7 +10,10 @@ import type { ThenArg } from '@/utils/type-helpers';
 import { checkAdmin, checkLoggedIn } from './auth';
 
 export type Spot = ThenArg<ReturnType<typeof getSpots>>[number];
-export type UpsertSpot = Omit<Spot, 'id' | 'slug' | 'createdAt' | 'updatedAt'>;
+export type UpsertSpot = Omit<
+  Spot,
+  'id' | 'slug' | 'createdAt' | 'updatedAt' | 'deletedAt'
+>;
 
 export const getSpots = async () => {
   const data = await db.select().from(spot).orderBy(desc(spot.createdAt));

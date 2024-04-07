@@ -6,8 +6,8 @@ import MapGL, {
   MarkerDragEvent,
   NavigationControl,
 } from 'react-map-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import { useCallback, useEffect, useState } from 'react';
+import { useTheme } from 'next-themes';
 
 import type { Point } from '@/types/point';
 
@@ -19,8 +19,12 @@ type MapProps = {
 };
 
 export default function Map({ coordinates, setCoordinates }: MapProps) {
+  const { theme } = useTheme();
   const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
-  const mapboxStyle = process.env.NEXT_PUBLIC_MAPBOX_STYLE;
+  const mapboxStyle =
+    theme === 'dark'
+      ? process.env.NEXT_PUBLIC_MAPBOX_STYLE_DARK
+      : process.env.NEXT_PUBLIC_MAPBOX_STYLE_LIGHT;
 
   const [viewState, setViewState] = useState({
     latitude: 34.100028,
