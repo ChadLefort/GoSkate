@@ -39,11 +39,11 @@ export default function Map({ coordinates, setCoordinates }: MapProps) {
         lng: event.lngLat.lng,
       };
 
-      setViewState({
+      setViewState((prevViewState) => ({
+        ...prevViewState,
         latitude: coordinates.lat,
         longitude: coordinates.lng,
-        zoom: 17,
-      });
+      }));
 
       setCoordinates && setCoordinates(coordinates);
     },
@@ -52,11 +52,11 @@ export default function Map({ coordinates, setCoordinates }: MapProps) {
 
   useEffect(() => {
     if (coordinates) {
-      setViewState({
+      setViewState((prevViewState) => ({
+        ...prevViewState,
         latitude: coordinates.lat,
         longitude: coordinates.lng,
-        zoom: 17,
-      });
+      }));
     }
   }, [coordinates]);
 

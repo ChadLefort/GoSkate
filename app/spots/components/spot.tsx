@@ -36,22 +36,22 @@ export default function Spot({ spot, images, handleDelete }: SpotProps) {
             )}
           </div>
 
-          <div className="flex gap-3 justify-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {images.map((image) => (
               <Image
                 key={image.id}
                 src={image.url}
-                width={300}
                 height={200}
                 isZoomed
-                className=" object-cover h-full min-h-44"
+                className="object-fill size-full max-h-52"
+                classNames={{ wrapper: 'flex' }}
                 alt={spot.name}
               />
             ))}
           </div>
 
           {spot.location && (
-            <div className="min-h-96">
+            <div className="h-full">
               <DisplayMap
                 initialViewState={{
                   latitude: spot.location.lat,

@@ -124,144 +124,158 @@ export default function AddSpotPage() {
       <h1 className={clsx(title(), 'mb-6')}>Add Spots</h1>
 
       {token && (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-4 h-full">
-            <form
-              className="flex flex-col justify-center gap-4"
-              onSubmit={handleSubmit(onSubmit)}
-            >
-              <Input
-                className="max-w-3xl mb-3"
-                label="Name"
-                isRequired
-                defaultValue={defaultValues?.name}
-                isInvalid={Boolean(errors.name)}
-                errorMessage={errors.name?.message}
-                {...register('name')}
-              />
-
-              <AddressAutofill
-                accessToken={token}
-                onRetrieve={handleRetrieve}
-                theme={{
-                  variables: {
-                    colorPrimary: PRIMARY_BRAND_COLOR,
-                    colorBackground: '#27272a',
-                    colorBackgroundHover: '#52525b80',
-                    colorText: '#fff',
-                  },
-                }}
-                popoverOptions={{
-                  offset: 15,
-                }}
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+            <div className="col-span-3">
+              <div
+                className="flex flex-col justify-center gap-4"
+                onSubmit={handleSubmit(onSubmit)}
               >
                 <Input
                   className="max-w-3xl mb-3"
-                  label="Address"
+                  label="Name"
                   isRequired
-                  defaultValue={defaultValues?.address}
-                  isInvalid={Boolean(errors.address)}
-                  errorMessage={errors.address?.message}
-                  {...register('address')}
-                />
-              </AddressAutofill>
-
-              <Input
-                className="max-w-3xl mb-3"
-                label="Address Line 2"
-                placeholder="Address Line 2"
-                isInvalid={Boolean(errors.addressLine2)}
-                errorMessage={errors.addressLine2?.message}
-                autoComplete="address-line2"
-                {...register('addressLine2')}
-              />
-
-              <Input
-                className="max-w-3xl mb-3"
-                label="City"
-                isRequired
-                defaultValue={defaultValues?.city}
-                isInvalid={Boolean(errors.city)}
-                errorMessage={errors.city?.message}
-                autoComplete="address-level2"
-                {...register('city')}
-              />
-
-              <div className="flex mb-3">
-                <Input
-                  className="max-w-3xl me-3"
-                  label="State"
-                  isRequired
-                  defaultValue={defaultValues?.state}
-                  isInvalid={Boolean(errors.state)}
-                  errorMessage={errors.state?.message}
-                  autoComplete="address-level1"
-                  {...register('state')}
+                  defaultValue={defaultValues?.name}
+                  isInvalid={Boolean(errors.name)}
+                  errorMessage={errors.name?.message}
+                  {...register('name')}
                 />
 
+                <div className="min-h-16">
+                  <AddressAutofill
+                    accessToken={token}
+                    onRetrieve={handleRetrieve}
+                    theme={{
+                      variables: {
+                        colorPrimary: PRIMARY_BRAND_COLOR,
+                        colorBackground: '#27272a',
+                        colorBackgroundHover: '#52525b80',
+                        colorText: '#fff',
+                      },
+                    }}
+                    popoverOptions={{
+                      offset: 15,
+                    }}
+                  >
+                    <Input
+                      className="max-w-3xl mb-3"
+                      label="Address"
+                      isRequired
+                      defaultValue={defaultValues?.address}
+                      isInvalid={Boolean(errors.address)}
+                      errorMessage={errors.address?.message}
+                      {...register('address')}
+                    />
+                  </AddressAutofill>
+                </div>
+
                 <Input
+                  className="max-w-3xl mb-3"
+                  label="Address Line 2"
+                  placeholder="Address Line 2"
+                  isInvalid={Boolean(errors.addressLine2)}
+                  errorMessage={errors.addressLine2?.message}
+                  autoComplete="address-line2"
+                  {...register('addressLine2')}
+                />
+
+                <Input
+                  className="max-w-3xl mb-3"
+                  label="City"
+                  isRequired
+                  defaultValue={defaultValues?.city}
+                  isInvalid={Boolean(errors.city)}
+                  errorMessage={errors.city?.message}
+                  autoComplete="address-level2"
+                  {...register('city')}
+                />
+
+                <div className="flex mb-3">
+                  <Input
+                    className="max-w-3xl me-3"
+                    label="State"
+                    isRequired
+                    defaultValue={defaultValues?.state}
+                    isInvalid={Boolean(errors.state)}
+                    errorMessage={errors.state?.message}
+                    autoComplete="address-level1"
+                    {...register('state')}
+                  />
+
+                  <Input
+                    className="max-w-3xl ms-3"
+                    label="Zip"
+                    isRequired
+                    defaultValue={defaultValues?.zip}
+                    isInvalid={Boolean(errors.zip)}
+                    errorMessage={errors.zip?.message}
+                    autoComplete="postal-code"
+                    {...register('zip')}
+                  />
+                </div>
+
+                <Textarea
                   className="max-w-3xl"
-                  label="Zip"
+                  label="Description"
+                  placeholder="Enter your description"
                   isRequired
-                  defaultValue={defaultValues?.zip}
-                  isInvalid={Boolean(errors.zip)}
-                  errorMessage={errors.zip?.message}
-                  autoComplete="postal-code"
-                  {...register('zip')}
+                  defaultValue={defaultValues?.description}
+                  isInvalid={Boolean(errors.description)}
+                  errorMessage={errors.description?.message}
+                  {...register('description')}
+                />
+
+                <Controller
+                  name="bustLevel"
+                  control={control}
+                  defaultValue={defaultValues?.bustLevel}
+                  render={({ field }) => (
+                    <Slider
+                      size="md"
+                      step={1}
+                      color="foreground"
+                      label="Bust Level"
+                      showSteps={true}
+                      maxValue={10}
+                      minValue={0}
+                      defaultValue={0.4}
+                      className="max-w-3xl"
+                      {...field}
+                    />
+                  )}
+                />
+
+                <label className="text-small">Images</label>
+                <Upload
+                  files={files}
+                  setFiles={setFiles}
+                  fileTypes={fileTypes}
                 />
               </div>
+            </div>
 
-              <Textarea
-                className="max-w-3xl"
-                label="Description"
-                placeholder="Enter your description"
-                isRequired
-                defaultValue={defaultValues?.description}
-                isInvalid={Boolean(errors.description)}
-                errorMessage={errors.description?.message}
-                {...register('description')}
-              />
-
-              <Controller
-                name="bustLevel"
-                control={control}
-                defaultValue={defaultValues?.bustLevel}
-                render={({ field }) => (
-                  <Slider
-                    size="md"
-                    step={1}
-                    color="foreground"
-                    label="Bust Level"
-                    showSteps={true}
-                    maxValue={10}
-                    minValue={0}
-                    defaultValue={0.4}
-                    className="max-w-3xl"
-                    {...field}
-                  />
-                )}
-              />
-
-              <label className="text-small">Images</label>
-              <Upload files={files} setFiles={setFiles} fileTypes={fileTypes} />
-
-              <Button
-                size="lg"
-                variant="shadow"
-                type="submit"
-                isLoading={isSubmitting || isUploading}
-                isDisabled={isSubmitting || isUploading || !isValid}
-              >
-                Add Spot
-              </Button>
-            </form>
-
-            <div className="flex flex-col">
+            <div className="col-span-3 min-h-96">
               <label className="text-small mb-3">Map Pin</label>
-              <Map coordinates={coordinates} setCoordinates={setCoordinates} />
+              <div className="h-full">
+                <Map
+                  coordinates={coordinates}
+                  setCoordinates={setCoordinates}
+                />
+              </div>
             </div>
           </div>
-        </>
+
+          <Button
+            size="lg"
+            variant="shadow"
+            type="submit"
+            isLoading={isSubmitting || isUploading}
+            isDisabled={isSubmitting || isUploading || !isValid}
+            className="mt-12 w-full"
+          >
+            Add Spot
+          </Button>
+        </form>
       )}
     </>
   );
