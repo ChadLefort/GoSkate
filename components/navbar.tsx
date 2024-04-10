@@ -94,7 +94,7 @@ export const Navbar = () => {
         <NavbarItem className="hidden lg:flex">
           <Search />
         </NavbarItem>
-        {clerkUser.isSignedIn ? (
+        {clerkUser ? (
           <>
             <UserButton afterSignOutUrl="/" />
             {user?.premium ? (

@@ -68,11 +68,21 @@ export const searchSpots = async (searchTerm?: string) => {
     return await getSpots();
   }
 
-  const data = await db
-    .select()
-    .from(spots)
-    .where(ilike(spots.name, `%${searchTerm}%`))
-    .orderBy(desc(spots.createdAt));
+  const data = await db.query.spots.findMany({
+    with: {
+      spotsToLabels: {
+        columns: {
+          labelId: false,
+          spotId: false,
+        },
+        with: {
+          label: true,
+        },
+      },
+    },
+    where: (spot, { ilike }) => ilike(spot.name, `%${searchTerm}%`),
+    orderBy: desc(spots.createdAt),
+  });
 
   return data;
 };
