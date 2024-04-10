@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Marker, Popup } from 'react-map-gl';
 import { Link } from '@nextui-org/link';
 import { Tab, Tabs } from '@nextui-org/tabs';
@@ -19,6 +19,11 @@ type Props = {
 export default function Spots({ spots }: Props) {
   const isSmallDevice = useMediaQuery('only screen and (max-width : 768px)');
   const [popupInfo, setPopupInfo] = useState<Spot | null>(null);
+  const [viewState, setViewState] = useState({
+    latitude: 34.100028,
+    longitude: -118.338894,
+    zoom: 17,
+  });
 
   const pins = useMemo(
     () =>
@@ -39,16 +44,20 @@ export default function Spots({ spots }: Props) {
     [spots]
   );
 
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((pos) => {
+      setViewState((prev) => ({
+        ...prev,
+        latitude: pos.coords.latitude,
+        longitude: pos.coords.longitude,
+        zoom: 5,
+      }));
+    });
+  }, []);
+
   const map = useMemo(
     () => (
-      <DisplayMap
-        initialViewState={{
-          latitude: 40,
-          longitude: -100,
-          zoom: 3.5,
-        }}
-        style={{ width: '100%', height: '100%' }}
-      >
+      <DisplayMap {...viewState} onMove={(evt) => setViewState(evt.viewState)}>
         {pins}
         {popupInfo && (
           <Popup
@@ -68,7 +77,7 @@ export default function Spots({ spots }: Props) {
         )}
       </DisplayMap>
     ),
-    [pins, popupInfo]
+    [pins, popupInfo, viewState]
   );
 
   return (

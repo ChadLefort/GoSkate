@@ -130,7 +130,6 @@ export const addSpot = async (data: AddSpot & { labels: string[] }) => {
       slug,
       userId,
     })
-    .onConflictDoUpdate({ target: spots.id, set: data })
     .returning();
 
   for (const id of data.labels) {

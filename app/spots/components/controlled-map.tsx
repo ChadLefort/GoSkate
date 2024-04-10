@@ -60,6 +60,17 @@ export default function Map({ coordinates, setCoordinates }: MapProps) {
     }
   }, [coordinates]);
 
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((pos) => {
+      setViewState((prev) => ({
+        ...prev,
+        latitude: pos.coords.latitude,
+        longitude: pos.coords.longitude,
+        zoom: 12,
+      }));
+    });
+  }, []);
+
   return (
     <MapGL
       {...viewState}

@@ -52,9 +52,13 @@ export default function Spot({ spot, nearbySpots, handleDelete }: SpotProps) {
                 key={image.id}
                 src={image.url}
                 height={200}
+                width="100%"
                 isZoomed
                 className="object-fill size-full max-h-52"
-                classNames={{ wrapper: 'flex' }}
+                classNames={{
+                  wrapper: 'flex flex-1',
+                  zoomedWrapper: 'flex flex-1',
+                }}
                 alt={spot.name}
               />
             ))}
