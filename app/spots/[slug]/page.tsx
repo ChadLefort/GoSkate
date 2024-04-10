@@ -3,7 +3,7 @@ import { Spinner } from '@nextui-org/spinner';
 import { redirect } from 'next/navigation';
 
 import { deleteSpot, getSpotBySlug } from '@/actions/spot-actions';
-import { getSpotImagesById, SpotImage } from '@/actions/spot-images.actions';
+import { getSpotImagesById, SpotImage } from '@/actions/spot-images-actions';
 
 import Spot from '../components/spot';
 

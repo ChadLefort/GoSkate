@@ -3,7 +3,7 @@ import { createUploadthing, type FileRouter } from 'uploadthing/next';
 import { UploadThingError } from 'uploadthing/server';
 import { z } from 'zod';
 
-import { addSpotImages } from '@/actions/spot-images.actions';
+import { addSpotImages } from '@/actions/spot-images-actions';
 
 const uploadThing = createUploadthing();
 

@@ -10,7 +10,7 @@ import { Chip } from '@nextui-org/chip';
 
 import { title } from '@/components/primitives';
 import { type Spot } from '@/actions/spot-actions';
-import { type SpotImage } from '@/actions/spot-images.actions';
+import { type SpotImage } from '@/actions/spot-images-actions';
 
 import ConfirmModal from '../components/confirm-modal';
 import DisplayMap from '../components/display-map';
@@ -35,6 +35,14 @@ export default function Spot({ spot, images, handleDelete }: SpotProps) {
             {isAdmin && (
               <ConfirmModal spot={spot} handleDelete={handleDelete} />
             )}
+          </div>
+
+          <div>
+            {spot.spotsToLabels.map(({ label }) => (
+              <Chip key={label.id} color={label.type} className="me-3 mb-3">
+                {label.name}
+              </Chip>
+            ))}
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -74,12 +82,6 @@ export default function Spot({ spot, images, handleDelete }: SpotProps) {
           <div>
             <p className="mb-3">{spot.description}</p>
 
-            {spot.spotsToLabels.map(({ label }) => (
-              <Chip key={label.id} color={label.type} className="me-3 mb-3">
-                {label.name}
-              </Chip>
-            ))}
-
             <p className="mb-3">
               <span className="font-bold">Address: </span>
               <Link
@@ -91,6 +93,7 @@ export default function Spot({ spot, images, handleDelete }: SpotProps) {
                 {spot.zip}
               </Link>
             </p>
+
             <p className="mb-3">
               <span className="font-bold">Bust Level: </span> {spot.bustLevel}
             </p>
