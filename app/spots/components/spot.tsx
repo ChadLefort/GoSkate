@@ -7,22 +7,23 @@ import { Marker } from 'react-map-gl';
 import { useAuth } from '@clerk/nextjs';
 import Link from 'next/link';
 import { Chip } from '@nextui-org/chip';
+import { Card, CardFooter } from '@nextui-org/card';
+import clsx from 'clsx';
 
 import { title } from '@/components/primitives';
-import { type Spot } from '@/actions/spot-actions';
-import { type SpotImage } from '@/actions/spot-images-actions';
+import { type Spot, type SpotWithImages } from '@/actions/spot-actions';
 
 import ConfirmModal from '../components/confirm-modal';
 import DisplayMap from '../components/display-map';
 import Pin from '../components/pin';
 
 type SpotProps = {
-  spot: Spot;
-  images: SpotImage[];
+  spot: SpotWithImages;
+  nearbySpots: SpotWithImages[];
   handleDelete: () => Promise<void>;
 };
 
-export default function Spot({ spot, images, handleDelete }: SpotProps) {
+export default function Spot({ spot, nearbySpots, handleDelete }: SpotProps) {
   const { has } = useAuth();
   const isAdmin = has && has({ role: 'org:admin' });
 
@@ -30,7 +31,7 @@ export default function Spot({ spot, images, handleDelete }: SpotProps) {
     <Suspense fallback={<Spinner />}>
       {spot && (
         <>
-          <div className="flex justify-between align-middle mb-6">
+          <div className="flex justify-between align-middle">
             <h1 className={title()}>{spot.name}</h1>
             {isAdmin && (
               <ConfirmModal spot={spot} handleDelete={handleDelete} />
@@ -46,7 +47,7 @@ export default function Spot({ spot, images, handleDelete }: SpotProps) {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {images.map((image) => (
+            {spot.images.map((image) => (
               <Image
                 key={image.id}
                 src={image.url}
@@ -98,6 +99,48 @@ export default function Spot({ spot, images, handleDelete }: SpotProps) {
               <span className="font-bold">Bust Level: </span> {spot.bustLevel}
             </p>
           </div>
+
+          {nearbySpots.length ? (
+            <div className="flex flex-col">
+              <h2 className={clsx(title({ size: 'sm' }), 'mb-4')}>
+                Nearby Spots
+              </h2>
+              <div className="columns-6">
+                {nearbySpots.map((nearbySpot) => (
+                  <Link key={nearbySpot.id} href={`/spots/${nearbySpot.slug}`}>
+                    <Card
+                      isFooterBlurred
+                      isPressable
+                      className="w-full h-[250px] col-span-12 sm:col-span-7"
+                    >
+                      <Image
+                        removeWrapper
+                        alt="Relaxing app background"
+                        className="z-0 w-full h-full object-cover"
+                        src={
+                          nearbySpot.images.length
+                            ? nearbySpot.images[0].url
+                            : '/placeholder-spot.webp'
+                        }
+                      />
+                      <CardFooter className="absolute bg-black/40 bottom-0 z-10 border-t-1 border-default-600 dark:border-default-100">
+                        <div className="flex flex-col items-start text-white">
+                          <b>{nearbySpot.name}</b>
+                          <p className="text-tiny">
+                            {nearbySpot.address} {nearbySpot.addressLine2}
+                          </p>
+                          <p className="text-tiny">
+                            {nearbySpot.city}, {nearbySpot.state}{' '}
+                            {nearbySpot.zip}
+                          </p>
+                        </div>
+                      </CardFooter>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </>
       )}
     </Suspense>

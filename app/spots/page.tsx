@@ -3,7 +3,7 @@ import { Button } from '@nextui-org/button';
 import { auth } from '@clerk/nextjs/server';
 
 import { title } from '@/components/primitives';
-import { getSpots, searchSpots, Spot } from '@/actions/spot-actions';
+import { getSpots, searchSpots, type Spot } from '@/actions/spot-actions';
 
 import Spots from './components/spots';
 

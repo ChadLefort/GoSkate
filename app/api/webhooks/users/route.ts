@@ -1,6 +1,6 @@
 import { Webhook } from 'svix';
 import { headers } from 'next/headers';
-import { WebhookEvent } from '@clerk/nextjs/server';
+import type { WebhookEvent } from '@clerk/nextjs/server';
 
 import { addUser, editUser, getUserById } from '@/actions/user-actions';
 

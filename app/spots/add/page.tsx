@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
 import { Input, Textarea } from '@nextui-org/input';
 import { Button } from '@nextui-org/button';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { Slider } from '@nextui-org/slider';
 import dynamic from 'next/dynamic';
 import React, { useCallback, useEffect, useState } from 'react';

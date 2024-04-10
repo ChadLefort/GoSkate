@@ -37,6 +37,7 @@ export const spots = pgTable('spots', {
 
 export const spotRelations = relations(spots, ({ many }) => ({
   spotsToLabels: many(spotsToLabels),
+  images: many(spotImages),
 }));
 
 export const labelTypeEnum = pgEnum('type', [
@@ -105,6 +106,13 @@ export const spotImages = pgTable('spot_images', {
     .default(sql`now()`),
   deletedAt: timestamp('deleted_at'),
 });
+
+export const spotImagesRelations = relations(spotImages, ({ one }) => ({
+  spot: one(spots, {
+    fields: [spotImages.spotId],
+    references: [spots.id],
+  }),
+}));
 
 export const users = pgTable('users', {
   id: uuid('id').defaultRandom().primaryKey(),

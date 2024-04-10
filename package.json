@@ -13,7 +13,8 @@
     "drizzle:push": "drizzle-kit push:pg",
     "drizzle:seed": "tsx ./db/seed.ts",
     "_ngrok": "ngrok http http://localhost:3000 --domain=$NGROK_DOMAIN",
-    "public": "dotenv -- npm run _ngrok"
+    "public": "dotenv -- npm run _ngrok",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@clerk/nextjs": "^5.0.0-beta.37",

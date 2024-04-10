@@ -2,11 +2,11 @@
 
 import { Autocomplete, AutocompleteItem } from '@nextui-org/autocomplete';
 import { IconSearch } from '@tabler/icons-react';
-import { Key, useEffect, useRef, useState } from 'react';
+import { type Key, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAsyncList } from '@react-stately/data';
 
-import { searchSpots, Spot } from '@/actions/spot-actions';
+import { searchSpots, type Spot } from '@/actions/spot-actions';
 
 export const Search = () => {
   const autocompleteRef = useRef<HTMLInputElement | null>(null);

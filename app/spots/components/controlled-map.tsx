@@ -3,7 +3,7 @@
 import MapGL, {
   FullscreenControl,
   Marker,
-  MarkerDragEvent,
+  type MarkerDragEvent,
   NavigationControl,
 } from 'react-map-gl';
 import { useCallback, useEffect, useState } from 'react';

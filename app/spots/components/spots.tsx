@@ -56,6 +56,7 @@ export default function Spots({ spots }: Props) {
             latitude={popupInfo.location.lat}
             longitude={popupInfo.location.lng}
             onClose={() => setPopupInfo(null)}
+            closeButton={false}
           >
             <Link href={`/spots/${popupInfo.slug}`} className="flex-col">
               <span>{popupInfo.name}</span>

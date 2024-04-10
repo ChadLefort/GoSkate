@@ -2,10 +2,6 @@ export type SiteConfig = typeof siteConfig;
 
 const nav = [
   {
-    label: 'Home',
-    href: '/',
-  },
-  {
     label: 'Spots',
     href: '/spots',
   },

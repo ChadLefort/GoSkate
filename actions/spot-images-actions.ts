@@ -4,7 +4,7 @@ import { desc, eq } from 'drizzle-orm';
 
 import db from '@/db/drizzle';
 import { spotImages } from '@/db/schema';
-import { ThenArg } from '@/utils/type-helpers';
+import type { ThenArg } from '@/utils/type-helpers';
 
 export type SpotImage = ThenArg<ReturnType<typeof getSpotImagesById>>[number];
 export type UpsertSpot = Omit<

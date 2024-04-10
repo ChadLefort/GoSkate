@@ -6,8 +6,8 @@ import { title } from '@/components/primitives';
 
 export default function Home() {
   const images = [
-    { src: '/hollywood-high.jpg', title: 'Highwood High 16' },
-    { src: '/el-toro.jpg', title: 'El Toro 20' },
+    { src: '/hollywood-high.webp', title: 'Highwood High 16' },
+    { src: '/el-toro.webp', title: 'El Toro 20' },
   ];
 
   const image = images[Math.floor(Math.random() * images.length)];

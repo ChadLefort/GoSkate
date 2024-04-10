@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { drizzle, PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 
 import 'dotenv/config';
