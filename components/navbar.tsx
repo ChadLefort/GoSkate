@@ -14,7 +14,7 @@ import { link as linkStyles } from '@nextui-org/theme';
 import clsx from 'clsx';
 import NextLink from 'next/link';
 import { useClerk, UserButton, useUser } from '@clerk/nextjs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { IconMedal } from '@tabler/icons-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@nextui-org/popover';
@@ -22,13 +22,15 @@ import { Popover, PopoverContent, PopoverTrigger } from '@nextui-org/popover';
 import { siteConfig } from '@/config/site';
 import { ThemeSwitch } from '@/components/theme-switch';
 import { Logo } from '@/components/icons';
+import { getUserById, type User } from '@/actions/user-actions';
 
 import { SignInButton } from './sign-in-button';
 import { Search } from './search';
 
 export const Navbar = () => {
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
-  const { user } = useUser();
+  const clerkUser = useUser();
   const { signOut } = useClerk();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -37,6 +39,17 @@ export const Navbar = () => {
     handleMenuToggle();
     signOut(() => router.push('/'));
   };
+
+  useEffect(() => {
+    const fetchUser = async (id: string) => {
+      const user = await getUserById(id);
+      user && setUser(user);
+    };
+
+    if (clerkUser.isSignedIn) {
+      fetchUser(clerkUser.user.id);
+    }
+  }, [clerkUser.isSignedIn, clerkUser.user?.id]);
 
   return (
     <NextUINavbar
@@ -81,20 +94,23 @@ export const Navbar = () => {
         <NavbarItem className="hidden lg:flex">
           <Search />
         </NavbarItem>
-        {user ? (
+        {clerkUser.isSignedIn ? (
           <>
             <UserButton afterSignOutUrl="/" />
-            <Popover placement="bottom">
-              <PopoverTrigger>
-                <IconMedal />
-              </PopoverTrigger>
-              <PopoverContent>
-                <div className="px-1 py-2">
-                  <div className="text-small font-bold">Premium User</div>
-                  <div className="text-tiny">Thanks for the support!</div>
-                </div>
-              </PopoverContent>
-            </Popover>
+            {user?.premium ? (
+              <Popover placement="bottom">
+                <PopoverTrigger>
+                  <IconMedal />
+                </PopoverTrigger>
+
+                <PopoverContent>
+                  <div className="px-1 py-2">
+                    <div className="text-small font-bold">Premium User</div>
+                    <div className="text-tiny">Thanks for the support!</div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            ) : null}
           </>
         ) : (
           <SignInButton />

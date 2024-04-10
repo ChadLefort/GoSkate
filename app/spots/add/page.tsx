@@ -6,17 +6,17 @@ import { Input, Textarea } from '@nextui-org/input';
 import { Button } from '@nextui-org/button';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Slider } from '@nextui-org/slider';
-import { Card, CardBody } from '@nextui-org/card';
 import dynamic from 'next/dynamic';
 import React, { useCallback, useEffect, useState } from 'react';
 import type { AddressAutofillProps } from '@mapbox/search-js-react/dist/components/AddressAutofill';
 import type { AddressAutofillRetrieveResponse } from '@mapbox/search-js-core';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Select, SelectItem } from '@nextui-org/select';
 
-import { addSpot, getSpotBySlug } from '@/actions/spot-actions';
+import { addSpot, getSpotBySlug, getSpotLabels } from '@/actions/spot-actions';
 import { title } from '@/components/primitives';
-import type { Spot, UpsertSpot } from '@/actions/spot-actions';
+import type { AddSpot, SpotLabel } from '@/actions/spot-actions';
 import type { Point } from '@/types/point';
 import { useUploadThing } from '@/utils/uploadthing';
 import { PRIMARY_BRAND_COLOR } from '@/config';
@@ -52,9 +52,11 @@ const formSchema = z.object({
   state: z.string().min(1, 'State is required'),
   zip: z.string().min(1, 'Zip is required'),
   description: z.string().min(1, 'Description is required'),
+  labels: z.string().min(1, 'Labels are required'),
 });
 
 export default function AddSpotPage() {
+  const [categories, setCategories] = useState<SpotLabel[]>([]);
   const router = useRouter();
   const [coordinates, setCoordinates] = useState<Point>();
   const [files, setFiles] = useState<File[]>([]);
@@ -71,7 +73,7 @@ export default function AddSpotPage() {
     handleSubmit,
     control,
     formState: { defaultValues, errors, isSubmitting, isValid },
-  } = useForm<Spot>({
+  } = useForm<AddSpot>({
     mode: 'onBlur',
     defaultValues: {
       name: '',
@@ -82,13 +84,18 @@ export default function AddSpotPage() {
       zip: '',
       description: '',
       bustLevel: 0,
+      labels: '',
     },
     resolver: zodResolver(formSchema),
   });
 
-  const onSubmit: SubmitHandler<UpsertSpot> = async (data) => {
+  const onSubmit: SubmitHandler<AddSpot> = async (data) => {
     if (coordinates) {
-      const spot = await addSpot({ ...data, location: coordinates });
+      const spot = await addSpot({
+        ...data,
+        location: coordinates,
+        labels: (data.labels as string).split(','),
+      });
 
       if (spot) {
         await startUpload(files, { spotId: spot.id });
@@ -119,6 +126,15 @@ export default function AddSpotPage() {
     setConfig();
   }, []);
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const categories = await getSpotLabels();
+      setCategories(categories);
+    };
+
+    fetchCategories();
+  }, []);
+
   return (
     <>
       <h1 className={clsx(title(), 'mb-6')}>Add Spots</h1>
@@ -132,7 +148,7 @@ export default function AddSpotPage() {
                 onSubmit={handleSubmit(onSubmit)}
               >
                 <Input
-                  className="max-w-3xl mb-3"
+                  className="max-w-3xl"
                   label="Name"
                   isRequired
                   defaultValue={defaultValues?.name}
@@ -141,7 +157,29 @@ export default function AddSpotPage() {
                   {...register('name')}
                 />
 
-                <div className="min-h-16">
+                <Controller
+                  name="labels"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      items={categories}
+                      label="Labels"
+                      isRequired
+                      placeholder="Select Labels"
+                      selectionMode="multiple"
+                      className=""
+                      isInvalid={Boolean(errors.labels)}
+                      errorMessage={errors.labels?.message}
+                      {...field}
+                    >
+                      {(label) => (
+                        <SelectItem key={label.id}>{label.name}</SelectItem>
+                      )}
+                    </Select>
+                  )}
+                />
+
+                <div className="min-h-14">
                   <AddressAutofill
                     accessToken={token}
                     onRetrieve={handleRetrieve}
@@ -158,7 +196,7 @@ export default function AddSpotPage() {
                     }}
                   >
                     <Input
-                      className="max-w-3xl mb-3"
+                      className="max-w-3xl"
                       label="Address"
                       isRequired
                       defaultValue={defaultValues?.address}
@@ -170,7 +208,7 @@ export default function AddSpotPage() {
                 </div>
 
                 <Input
-                  className="max-w-3xl mb-3"
+                  className="max-w-3xl"
                   label="Address Line 2"
                   placeholder="Address Line 2"
                   isInvalid={Boolean(errors.addressLine2)}
@@ -180,7 +218,7 @@ export default function AddSpotPage() {
                 />
 
                 <Input
-                  className="max-w-3xl mb-3"
+                  className="max-w-3xl"
                   label="City"
                   isRequired
                   defaultValue={defaultValues?.city}
@@ -190,9 +228,9 @@ export default function AddSpotPage() {
                   {...register('city')}
                 />
 
-                <div className="flex mb-3">
+                <div className="flex">
                   <Input
-                    className="max-w-3xl me-3"
+                    className="max-w-3xl"
                     label="State"
                     isRequired
                     defaultValue={defaultValues?.state}
@@ -255,7 +293,6 @@ export default function AddSpotPage() {
             </div>
 
             <div className="col-span-3 min-h-96">
-              <label className="text-small mb-3">Map Pin</label>
               <div className="h-full">
                 <Map
                   coordinates={coordinates}

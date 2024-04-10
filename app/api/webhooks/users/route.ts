@@ -62,7 +62,7 @@ export async function POST(req: Request) {
       if (await getUserById(userId)) {
         await editUser(userId, data);
       } else {
-        await addUser({ userId, data });
+        await addUser({ userId, data, premium: false });
       }
     }
   }

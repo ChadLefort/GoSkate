@@ -6,6 +6,7 @@ import { Image } from '@nextui-org/image';
 import { Marker } from 'react-map-gl';
 import { useAuth } from '@clerk/nextjs';
 import Link from 'next/link';
+import { Chip } from '@nextui-org/chip';
 
 import { title } from '@/components/primitives';
 import { type Spot } from '@/actions/spot-actions';
@@ -51,7 +52,7 @@ export default function Spot({ spot, images, handleDelete }: SpotProps) {
           </div>
 
           {spot.location && (
-            <div className="h-full">
+            <div className="h-full min-h-96">
               <DisplayMap
                 initialViewState={{
                   latitude: spot.location.lat,
@@ -72,6 +73,13 @@ export default function Spot({ spot, images, handleDelete }: SpotProps) {
 
           <div>
             <p className="mb-3">{spot.description}</p>
+
+            {spot.spotsToLabels.map(({ label }) => (
+              <Chip key={label.id} color={label.type} className="me-3 mb-3">
+                {label.name}
+              </Chip>
+            ))}
+
             <p className="mb-3">
               <span className="font-bold">Address: </span>
               <Link

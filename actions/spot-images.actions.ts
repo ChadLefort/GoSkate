@@ -3,7 +3,7 @@
 import { desc, eq } from 'drizzle-orm';
 
 import db from '@/db/drizzle';
-import { spotImage } from '@/db/schema';
+import { spotImages } from '@/db/schema';
 import { ThenArg } from '@/utils/type-helpers';
 
 export type SpotImage = ThenArg<ReturnType<typeof getSpotImagesById>>[number];
@@ -15,15 +15,15 @@ export type UpsertSpot = Omit<
 export const getSpotImagesById = async (id: string) => {
   const images = await db
     .select()
-    .from(spotImage)
-    .where(eq(spotImage.spotId, id))
-    .orderBy(desc(spotImage.createdAt));
+    .from(spotImages)
+    .where(eq(spotImages.spotId, id))
+    .orderBy(desc(spotImages.createdAt));
 
   return images;
 };
 
 export const addSpotImages = async (data: UpsertSpot) => {
-  const [newSpotImage] = await db.insert(spotImage).values(data).returning();
+  const [newSpotImage] = await db.insert(spotImages).values(data).returning();
 
   return newSpotImage;
 };

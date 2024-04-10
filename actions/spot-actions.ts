@@ -4,28 +4,63 @@ import { revalidatePath } from 'next/cache';
 import { desc, eq, ilike } from 'drizzle-orm';
 
 import db from '@/db/drizzle';
-import { spot } from '@/db/schema';
+import { spots, spotsToLabels } from '@/db/schema';
 import type { ThenArg } from '@/utils/type-helpers';
 
 import { checkAdmin, checkLoggedIn } from './auth';
 
 export type Spot = ThenArg<ReturnType<typeof getSpots>>[number];
-export type UpsertSpot = Omit<
+export type SpotLabel = ThenArg<ReturnType<typeof getSpotLabels>>[number];
+export type AddSpot = Omit<
   Spot,
-  'id' | 'slug' | 'createdAt' | 'updatedAt' | 'deletedAt'
+  'id' | 'slug' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'spotsToLabels'
+> & { labels: string | string[] };
+export type AddSpotLabel = Omit<
+  SpotLabel,
+  'id' | 'createdAt' | 'updatedAt' | 'deletedAt'
 >;
 
 export const getSpots = async () => {
-  const data = await db.select().from(spot).orderBy(desc(spot.createdAt));
+  const data = await db.query.spots.findMany({
+    orderBy: desc(spots.createdAt),
+    with: {
+      spotsToLabels: {
+        columns: {
+          labelId: false,
+          spotId: false,
+        },
+        with: {
+          label: true,
+        },
+      },
+    },
+  });
+
   return data;
 };
 
+export const getSpotLabels = async () => {
+  const categories = await db.query.spotLabels.findMany();
+  return categories;
+};
+
 export const getSpotBySlug = async (slug: string) => {
-  const spot = await db.query.spot.findFirst({
+  const data = await db.query.spots.findFirst({
+    with: {
+      spotsToLabels: {
+        columns: {
+          labelId: false,
+          spotId: false,
+        },
+        with: {
+          label: true,
+        },
+      },
+    },
     where: (spot, { eq }) => eq(spot.slug, slug.toLowerCase()),
   });
 
-  return spot;
+  return data;
 };
 
 export const searchSpots = async (searchTerm?: string) => {
@@ -35,30 +70,37 @@ export const searchSpots = async (searchTerm?: string) => {
 
   const data = await db
     .select()
-    .from(spot)
-    .where(ilike(spot.name, `%${searchTerm}%`))
-    .orderBy(desc(spot.createdAt));
+    .from(spots)
+    .where(ilike(spots.name, `%${searchTerm}%`))
+    .orderBy(desc(spots.createdAt));
 
   return data;
 };
 
-export const addSpot = async (data: UpsertSpot) => {
+export const addSpot = async (data: AddSpot & { labels: string[] }) => {
   const { userId } = await checkLoggedIn();
 
   const slug = data.name.toLowerCase().replace(/\s/g, '-');
-  const existingSpot = await db.query.spot.findFirst({
+  const existingSpot = await db.query.spots.findFirst({
     where: (spot, { eq }) => eq(spot.slug, slug),
   });
 
   if (!existingSpot) {
     const [newSpot] = await db
-      .insert(spot)
+      .insert(spots)
       .values({
         ...data,
         slug,
         userId,
       })
       .returning();
+
+    for (const id of data.labels) {
+      await db.insert(spotsToLabels).values({
+        spotId: newSpot.id,
+        labelId: id,
+      });
+    }
 
     revalidatePath('/spots');
 
@@ -73,14 +115,14 @@ export const deleteSpot = async (id: string) => {
     throw new Error('You must be an admin to perform this action');
   }
 
-  await db.delete(spot).where(eq(spot.id, id));
+  await db.delete(spots).where(eq(spots.id, id));
 
   revalidatePath('/spots');
 };
 
-export const editSpot = async (id: string, data: UpsertSpot) => {
+export const editSpot = async (id: string, data: AddSpot) => {
   await checkLoggedIn();
-  await db.update(spot).set(data).where(eq(spot.id, id));
+  await db.update(spots).set(data).where(eq(spots.id, id));
 
   revalidatePath('/spots');
 };

@@ -11,7 +11,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { Pagination } from '@nextui-org/pagination';
-import { useMediaQuery } from '@uidotdev/usehooks';
+import { useMediaQuery } from 'usehooks-ts';
 
 import type { Spot } from '@/actions/spot-actions';
 

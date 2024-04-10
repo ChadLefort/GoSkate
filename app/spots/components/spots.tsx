@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { Marker, Popup } from 'react-map-gl';
 import { Link } from '@nextui-org/link';
 import { Tab, Tabs } from '@nextui-org/tabs';
-import { useMediaQuery } from '@uidotdev/usehooks';
+import { useMediaQuery } from 'usehooks-ts';
 
 import type { Spot } from '@/actions/spot-actions';
 
