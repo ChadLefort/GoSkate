@@ -89,7 +89,7 @@ export default function Spots({ spots }: Props) {
               <div className="h-full col-span-4 m-h-96">{map}</div>
 
               <div className="col-span-4 flex">
-                <SpotsTable spots={spots} />
+                <SpotsTable spots={spots} isSplitView />
               </div>
             </div>
           </Tab>
