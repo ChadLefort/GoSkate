@@ -7,22 +7,15 @@ import db from '@/db/drizzle';
 import { spots, spotsToLabels } from '@/db/schema';
 import type { ThenArg } from '@/utils/type-helpers';
 import type { Point } from '@/types/point';
-
-import { checkAdmin, checkLoggedIn } from './auth';
+import { checkAdmin, checkLoggedIn } from '@/utils/auth';
 
 export type Spot = ThenArg<ReturnType<typeof getSpots>>[number];
-export type SpotWithImages = NonNullable<
-  ThenArg<ReturnType<typeof getSpotBySlug>>
->;
+export type SpotWithImages = NonNullable<ThenArg<ReturnType<typeof getSpotBySlug>>>;
 export type SpotLabel = ThenArg<ReturnType<typeof getSpotLabels>>[number];
-export type AddSpot = Omit<
-  Spot,
-  'id' | 'slug' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'spotsToLabels'
-> & { labels: string | string[] };
-export type AddSpotLabel = Omit<
-  SpotLabel,
-  'id' | 'createdAt' | 'updatedAt' | 'deletedAt'
->;
+export type AddSpot = Omit<Spot, 'id' | 'slug' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'spotsToLabels'> & {
+  labels: string | string[];
+};
+export type AddSpotLabel = Omit<SpotLabel, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>;
 
 export const getSpots = async () => {
   const data = await db.query.spots.findMany({

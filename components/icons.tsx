@@ -2,23 +2,9 @@ import * as React from 'react';
 
 import type { IconSvgProps } from '@/types';
 
-export const Logo: React.FC<IconSvgProps> = ({
-  size = 36,
-  width,
-  height,
-  ...props
-}) => (
-  <svg
-    width={size || width}
-    height={size || height}
-    {...props}
-    viewBox="0 0 455.000000 430.000000"
-  >
-    <g
-      transform="translate(0.000000,430.000000) scale(0.100000,-0.100000)"
-      fill="currentColor"
-      stroke="none"
-    >
+export const Logo: React.FC<IconSvgProps> = ({ size = 36, width, height, ...props }) => (
+  <svg width={size || width} height={size || height} {...props} viewBox="0 0 455.000000 430.000000">
+    <g transform="translate(0.000000,430.000000) scale(0.100000,-0.100000)" fill="currentColor" stroke="none">
       <path
         d="M2535 4287 c-177 -47 -304 -188 -335 -373 l-11 -71 -46 24 c-77 39
 -120 31 -341 -64 -68 -29 -86 -42 -97 -67 -12 -27 -13 -28 -14 -8 -1 25 -4 26

@@ -7,10 +7,7 @@ import { users } from '@/db/schema';
 import type { ThenArg } from '@/utils/type-helpers';
 
 export type User = ThenArg<ReturnType<typeof getUsers>>[number];
-export type AddEditUser = Omit<
-  User,
-  'id' | 'createdAt' | 'updatedAt' | 'deletedAt'
->;
+export type AddEditUser = Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>;
 
 export const getUsers = async () => {
   const data = await db.select().from(users).orderBy(desc(users.createdAt));
@@ -29,10 +26,7 @@ export const addUser = async (data: AddEditUser) => {
   await db.insert(users).values(data);
 };
 
-export const editUser = async (
-  id: string,
-  { data, premium }: Partial<AddEditUser>
-) => {
+export const editUser = async (id: string, { data, premium }: Partial<AddEditUser>) => {
   const updateQuery = db.update(users);
   const updatedAt = new Date();
 

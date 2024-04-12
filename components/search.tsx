@@ -24,9 +24,7 @@ export const Search = () => {
 
   const handleSelection = (key: Key | null) => {
     if (key && !submitted) {
-      list.setFilterText(
-        list.items.find((item) => item.slug === key)?.name || ''
-      );
+      list.setFilterText(list.items.find((item) => item.slug === key)?.name || '');
 
       autocompleteRef.current?.blur();
       router.push(`/spots/${key}`);
@@ -38,9 +36,7 @@ export const Search = () => {
       autocompleteRef.current?.blur();
       setSubmitted(false);
 
-      const selectedSpot = list.items.find(
-        (item) => item.name === list.filterText
-      );
+      const selectedSpot = list.items.find((item) => item.name === list.filterText);
 
       if (selectedSpot) {
         router.push(`/spots/${selectedSpot.slug}`);
@@ -72,19 +68,13 @@ export const Search = () => {
           setSubmitted(true);
         }
       }}
-      startContent={
-        <IconSearch className="text-default-400" strokeWidth={2.5} size={20} />
-      }
+      startContent={<IconSearch className="text-default-400" strokeWidth={2.5} size={20} />}
       classNames={{
         selectorButton: 'hidden',
       }}
     >
       {(item) => (
-        <AutocompleteItem
-          key={item.slug}
-          textValue={item.name}
-          hideSelectedIcon
-        >
+        <AutocompleteItem key={item.slug} textValue={item.name} hideSelectedIcon>
           <span className="text-small">{item.name}</span>
         </AutocompleteItem>
       )}

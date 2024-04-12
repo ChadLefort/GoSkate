@@ -60,14 +60,10 @@ export default function AddSpotPage() {
   const router = useRouter();
   const [coordinates, setCoordinates] = useState<Point>();
   const [files, setFiles] = useState<File[]>([]);
-  const { startUpload, permittedFileInfo, isUploading } =
-    useUploadThing('spotImages');
-
-  const fileTypes = permittedFileInfo?.config
-    ? Object.keys(permittedFileInfo?.config)
-    : [];
-
+  const { startUpload, permittedFileInfo, isUploading } = useUploadThing('spotImages');
+  const fileTypes = permittedFileInfo?.config ? Object.keys(permittedFileInfo?.config) : [];
   const [token, setToken] = useState('');
+
   const {
     register,
     handleSubmit,
@@ -141,12 +137,9 @@ export default function AddSpotPage() {
 
       {token && (
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-6">
             <div className="col-span-3">
-              <div
-                className="flex flex-col justify-center gap-4"
-                onSubmit={handleSubmit(onSubmit)}
-              >
+              <div className="flex flex-col justify-center gap-4" onSubmit={handleSubmit(onSubmit)}>
                 <Input
                   className="max-w-3xl"
                   label="Name"
@@ -172,9 +165,7 @@ export default function AddSpotPage() {
                       errorMessage={errors.labels?.message}
                       {...field}
                     >
-                      {(label) => (
-                        <SelectItem key={label.id}>{label.name}</SelectItem>
-                      )}
+                      {(label) => <SelectItem key={label.id}>{label.name}</SelectItem>}
                     </Select>
                   )}
                 />
@@ -241,7 +232,7 @@ export default function AddSpotPage() {
                   />
 
                   <Input
-                    className="max-w-3xl ms-3"
+                    className="ms-3 max-w-3xl"
                     label="Zip"
                     isRequired
                     defaultValue={defaultValues?.zip}
@@ -284,20 +275,13 @@ export default function AddSpotPage() {
                 />
 
                 <label className="text-small">Images</label>
-                <Upload
-                  files={files}
-                  setFiles={setFiles}
-                  fileTypes={fileTypes}
-                />
+                <Upload files={files} setFiles={setFiles} fileTypes={fileTypes} />
               </div>
             </div>
 
             <div className="col-span-3 min-h-96">
               <div className="h-full">
-                <Map
-                  coordinates={coordinates}
-                  setCoordinates={setCoordinates}
-                />
+                <Map coordinates={coordinates} setCoordinates={setCoordinates} />
               </div>
             </div>
           </div>

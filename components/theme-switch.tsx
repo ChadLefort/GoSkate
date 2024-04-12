@@ -13,10 +13,7 @@ export interface ThemeSwitchProps {
   classNames?: SwitchProps['classNames'];
 }
 
-export const ThemeSwitch: FC<ThemeSwitchProps> = ({
-  className,
-  classNames,
-}) => {
+export const ThemeSwitch: FC<ThemeSwitchProps> = ({ className, classNames }) => {
   const { theme, setTheme } = useTheme();
   const isSSR = useIsSSR();
 
@@ -24,14 +21,7 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
     theme === 'light' ? setTheme('dark') : setTheme('light');
   };
 
-  const {
-    Component,
-    slots,
-    isSelected,
-    getBaseProps,
-    getInputProps,
-    getWrapperProps,
-  } = useSwitch({
+  const { Component, slots, isSelected, getBaseProps, getInputProps, getWrapperProps } = useSwitch({
     isSelected: theme === 'light' || isSSR,
     'aria-label': `Switch to ${theme === 'light' || isSSR ? 'dark' : 'light'} mode`,
     onChange,
@@ -40,11 +30,7 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
   return (
     <Component
       {...getBaseProps({
-        className: clsx(
-          'px-px transition-opacity hover:opacity-80 cursor-pointer',
-          className,
-          classNames?.base
-        ),
+        className: clsx('px-px transition-opacity hover:opacity-80 cursor-pointer', className, classNames?.base),
       })}
     >
       <VisuallyHidden>
@@ -55,7 +41,7 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
         className={slots.wrapper({
           class: clsx(
             [
-              'w-auto h-auto',
+              'h-auto w-auto',
               'bg-transparent',
               'rounded-lg',
               'flex items-center justify-center',
@@ -69,11 +55,7 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
           ),
         })}
       >
-        {!isSelected || isSSR ? (
-          <IconSun size={22} />
-        ) : (
-          <IconMoonStars size={22} />
-        )}
+        {!isSelected || isSSR ? <IconSun size={22} /> : <IconMoonStars size={22} />}
       </div>
     </Component>
   );

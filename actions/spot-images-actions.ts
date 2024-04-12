@@ -7,10 +7,7 @@ import { spotImages } from '@/db/schema';
 import type { ThenArg } from '@/utils/type-helpers';
 
 export type SpotImage = ThenArg<ReturnType<typeof getSpotImagesById>>[number];
-export type UpsertSpot = Omit<
-  SpotImage,
-  'id' | 'createdAt' | 'updatedAt' | 'deletedAt'
->;
+export type UpsertSpot = Omit<SpotImage, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>;
 
 export const getSpotImagesById = async (id: string) => {
   const images = await db

@@ -18,7 +18,6 @@ export const metadata: Metadata = {
     template: `%s - ${siteConfig.name}`,
   },
   description: siteConfig.description,
-
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon-16x16.png',
@@ -33,38 +32,24 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
-      <body
-        className={clsx(
-          'min-h-screen bg-background font-sans antialiased',
-          fontSans.variable
-        )}
-      >
-        <Providers
-          themeProps={{ attribute: 'class', defaultTheme: 'dark', children }}
-        >
-          <div className="relative flex flex-col h-screen">
+      <body className={clsx('min-h-screen bg-background font-sans antialiased', fontSans.variable)}>
+        <Providers themeProps={{ attribute: 'class', defaultTheme: 'dark', children }}>
+          <div className="relative flex h-screen flex-col">
             <Navbar />
-            <main className="container mx-auto max-w-10xl py-16 px-6 flex flex-col flex-grow">
-              {children}
-            </main>
-            <footer className="w-full flex items-center justify-center py-3">
+            <main className="max-w-10xl container mx-auto flex flex-grow flex-col px-6 py-16">{children}</main>
+            <footer className="flex w-full items-center justify-center py-3">
               <Link
                 isExternal
                 className="flex items-center gap-1 text-current"
                 href="https://chadlefort.com"
                 title="Chad Lefort's Portfolio"
               >
-                <span className="text-default-600 flex">
-                  Made with <IconHeart className="text-red-500 m-1" size={16} />{' '}
-                  by
+                <span className="flex text-default-600">
+                  Made with <IconHeart className="m-1 text-red-500" size={16} /> by
                 </span>
                 <p className="text-primary">Chad Lefort</p>
               </Link>

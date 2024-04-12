@@ -1,20 +1,11 @@
 import clsx from 'clsx';
 
 import { title } from '@/components/primitives';
-import {
-  getSpotLabels,
-  getSpots,
-  searchSpots,
-  type Spot,
-} from '@/actions/spot-actions';
+import { getSpotLabels, getSpots, searchSpots, type Spot } from '@/actions/spot-actions';
 
 import Spots from './components/spots';
 
-export default async function SpotsPage({
-  searchParams: { search },
-}: {
-  searchParams: { search: string };
-}) {
+export default async function SpotsPage({ searchParams: { search } }: { searchParams: { search: string } }) {
   let data: Spot[] = [];
   const labels = await getSpotLabels();
 

@@ -1,14 +1,4 @@
-import {
-  boolean,
-  json,
-  pgEnum,
-  pgTable,
-  primaryKey,
-  smallint,
-  text,
-  timestamp,
-  uuid,
-} from 'drizzle-orm/pg-core';
+import { boolean, json, pgEnum, pgTable, primaryKey, smallint, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 import { relations, sql } from 'drizzle-orm';
 
 import { point } from './geometryType';
@@ -40,14 +30,7 @@ export const spotRelations = relations(spots, ({ many }) => ({
   images: many(spotImages),
 }));
 
-export const labelTypeEnum = pgEnum('type', [
-  'default',
-  'primary',
-  'secondary',
-  'success',
-  'warning',
-  'danger',
-]);
+export const labelTypeEnum = pgEnum('type', ['default', 'primary', 'secondary', 'success', 'warning', 'danger']);
 
 export const spotLabels = pgTable('spot_labels', {
   id: uuid('id').defaultRandom().primaryKey(),

@@ -8,9 +8,7 @@ export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
 
   if (!WEBHOOK_SECRET) {
-    throw new Error(
-      'Please add WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local'
-    );
+    throw new Error('Please add WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local');
   }
 
   // Get the headers
@@ -50,9 +48,7 @@ export async function POST(req: Request) {
   const { id } = event.data;
   const eventType = event.type;
 
-  console.log(
-    `✅ Success: Webhook with and ID of ${id} and type of ${eventType}`
-  );
+  console.log(`✅ Success: Webhook with and ID of ${id} and type of ${eventType}`);
 
   if (eventType.includes('user')) {
     const userId = payload.data.id;

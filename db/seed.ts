@@ -68,8 +68,6 @@ const generateSpotCategories = (): AddSpotLabel[] => {
 
     { name: 'Flatground', description: 'Flatground', type: 'danger' },
     { name: 'Curb', description: 'A curb', type: 'danger' },
-
-    { name: 'Other', description: 'Other', type: 'default' },
   ];
 
   return categories;
@@ -86,10 +84,7 @@ async function seed() {
 
   // database setup
   const newSpotCategories = generateSpotCategories();
-  const categories = await db
-    .insert(spotLabels)
-    .values(newSpotCategories)
-    .returning();
+  const categories = await db.insert(spotLabels).values(newSpotCategories).returning();
 
   const newSpotRows = generateSpotRows(50);
   const spotRows = await db.insert(spots).values(newSpotRows).returning();

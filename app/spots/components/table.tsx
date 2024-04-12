@@ -50,13 +50,7 @@ export default function SpotsTable({
       onSortChange={setSortDescriptor}
       bottomContent={
         <div className="flex w-full justify-center">
-          <Pagination
-            isCompact
-            showControls
-            page={page}
-            total={pages}
-            onChange={(page) => setPage(page)}
-          />
+          <Pagination isCompact showControls page={page} total={pages} onChange={(page) => setPage(page)} />
         </div>
       }
     >
@@ -91,33 +85,22 @@ export default function SpotsTable({
       <TableBody emptyContent={'No rows to display.'} items={spots}>
         {(spot) =>
           !isSmallDevice && !isSplitView ? (
-            <TableRow
-              key={spot.id}
-              className="cursor-pointer"
-              onClick={() => gotoSpot(spot.slug)}
-            >
+            <TableRow key={spot.id} className="cursor-pointer" onClick={() => gotoSpot(spot.slug)}>
               <TableCell>{spot.name}</TableCell>
               <TableCell>
                 <span className="md:truncate">
-                  {spot.address} {spot.addressLine2} {spot.city}, {spot.state}{' '}
-                  {spot.zip}
+                  {spot.address} {spot.addressLine2} {spot.city}, {spot.state} {spot.zip}
                 </span>
               </TableCell>
               <TableCell>
-                {spot.spotsToLabels
-                  .slice(0, labelToDisplay)
-                  .map(({ label }) => (
-                    <Chip
-                      key={label.id}
-                      color={label.type}
-                      className="me-3 mb-3 xl:mb-0"
-                    >
-                      {label.name}
-                    </Chip>
-                  ))}
+                {spot.spotsToLabels.slice(0, labelToDisplay).map(({ label }) => (
+                  <Chip key={label.id} color={label.type} className="mb-3 me-3 xl:mb-0">
+                    {label.name}
+                  </Chip>
+                ))}
 
                 {spot.spotsToLabels.length >= 5 && (
-                  <Chip color="default" className="me-3 mb-3 xl:mb-0">
+                  <Chip color="default" className="mb-3 me-3 xl:mb-0">
                     +{spot.spotsToLabels.length - labelToDisplay} more
                   </Chip>
                 )}
@@ -125,16 +108,11 @@ export default function SpotsTable({
               <TableCell>{spot.bustLevel}</TableCell>
             </TableRow>
           ) : (
-            <TableRow
-              key={spot.id}
-              className="cursor-pointer"
-              onClick={() => gotoSpot(spot.slug)}
-            >
+            <TableRow key={spot.id} className="cursor-pointer" onClick={() => gotoSpot(spot.slug)}>
               <TableCell>{spot.name}</TableCell>
               <TableCell>
                 <span className="md:truncate">
-                  {spot.address} {spot.addressLine2} {spot.city}, {spot.state}{' '}
-                  {spot.zip}
+                  {spot.address} {spot.addressLine2} {spot.city}, {spot.state} {spot.zip}
                 </span>
               </TableCell>
 

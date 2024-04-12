@@ -13,8 +13,7 @@ export async function POST(req: Request) {
       process.env.STRIPE_WEBHOOK_SECRET as string
     );
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : 'Unknown error';
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
 
     // On error, log and return the error message.
     if (error! instanceof Error) {
@@ -23,10 +22,7 @@ export async function POST(req: Request) {
 
     console.log(`❌ Error message: ${errorMessage}`);
 
-    return Response.json(
-      { message: `Webhook Error: ${errorMessage}` },
-      { status: 400 }
-    );
+    return Response.json({ message: `Webhook Error: ${errorMessage}` }, { status: 400 });
   }
 
   // Successfully constructed event.
@@ -65,10 +61,7 @@ export async function POST(req: Request) {
     } catch (error) {
       console.log(error);
 
-      return Response.json(
-        { message: 'Webhook handler failed' },
-        { status: 500 }
-      );
+      return Response.json({ message: 'Webhook handler failed' }, { status: 500 });
     }
   }
 

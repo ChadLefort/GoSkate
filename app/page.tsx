@@ -14,7 +14,7 @@ export default function Home() {
 
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-12">
-      <div className="inline-block max-w-3xl text-center justify-center">
+      <div className="inline-block max-w-3xl justify-center text-center">
         <div className="mb-8">
           <Image isBlurred src={image.src} alt={image.title} />
         </div>

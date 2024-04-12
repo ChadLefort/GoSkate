@@ -7,7 +7,7 @@ import { IconCash } from '@tabler/icons-react';
 
 import { formatAmountForDisplay } from '@/utils/stripe-helpers';
 import * as config from '@/config';
-import { createCheckoutSession } from '@/actions/stripe';
+import { createCheckoutSession } from '@/actions/stripe-actions';
 
 export default function CheckoutForm() {
   const [loading] = useState<boolean>(false);
@@ -15,8 +15,7 @@ export default function CheckoutForm() {
     customDonation: config.DEFAULT_AMOUNT,
   });
 
-  const handleInputChange = (value: number | number[]): void =>
-    setInput({ customDonation: value as number });
+  const handleInputChange = (value: number | number[]): void => setInput({ customDonation: value as number });
 
   const formAction = async (data: FormData): Promise<void> => {
     const { url } = await createCheckoutSession(data);

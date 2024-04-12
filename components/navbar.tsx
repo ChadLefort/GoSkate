@@ -52,27 +52,21 @@ export const Navbar = () => {
   }, [clerkUser.isSignedIn, clerkUser.user?.id]);
 
   return (
-    <NextUINavbar
-      isMenuOpen={isMenuOpen}
-      onMenuOpenChange={setIsMenuOpen}
-      maxWidth="2xl"
-      position="sticky"
-      isBordered
-    >
+    <NextUINavbar isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen} maxWidth="2xl" position="sticky" isBordered>
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
-        <NavbarBrand as="li" className="gap-3 max-w-fit">
-          <NextLink className="flex justify-start items-center gap-1" href="/">
-            <Logo className="mr-2 pr" />
+        <NavbarBrand as="li" className="max-w-fit gap-3">
+          <NextLink className="flex items-center justify-start gap-1" href="/">
+            <Logo className="pr mr-2" />
             <p className="font-bold text-inherit">GoSkate</p>
           </NextLink>
         </NavbarBrand>
-        <ul className="hidden lg:flex gap-4 justify-start ml-2">
+        <ul className="ml-2 hidden justify-start gap-4 lg:flex">
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
               <Link
                 className={clsx(
                   linkStyles({ color: 'foreground' }),
-                  'data-[active=true]:text-primary data-[active=true]:font-medium'
+                  'data-[active=true]:font-medium data-[active=true]:text-primary'
                 )}
                 color="foreground"
                 href={item.href}
@@ -84,11 +78,8 @@ export const Navbar = () => {
         </ul>
       </NavbarContent>
 
-      <NavbarContent
-        className="hidden sm:flex basis-1/5 sm:basis-full"
-        justify="end"
-      >
-        <NavbarItem className="hidden sm:flex gap-2">
+      <NavbarContent className="hidden basis-1/5 sm:flex sm:basis-full" justify="end">
+        <NavbarItem className="hidden gap-2 sm:flex">
           <ThemeSwitch />
         </NavbarItem>
         <NavbarItem className="hidden lg:flex">
@@ -117,11 +108,9 @@ export const Navbar = () => {
         ) : null}
       </NavbarContent>
 
-      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
+      <NavbarContent className="basis-1 pl-4 sm:hidden" justify="end">
         <ThemeSwitch />
-        <NavbarMenuToggle
-          aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-        />
+        <NavbarMenuToggle aria-label={isMenuOpen ? 'Close menu' : 'Open menu'} />
       </NavbarContent>
 
       <NavbarMenu>
@@ -133,7 +122,7 @@ export const Navbar = () => {
                 <Link
                   className={clsx(
                     linkStyles({ color: 'foreground' }),
-                    'data-[active=true]:text-primary data-[active=true]:font-medium'
+                    'data-[active=true]:font-medium data-[active=true]:text-primary'
                   )}
                   color="foreground"
                   href={item.href}
@@ -151,7 +140,7 @@ export const Navbar = () => {
                   <Link
                     className={clsx(
                       linkStyles({ color: 'foreground' }),
-                      'data-[active=true]:text-primary data-[active=true]:font-medium'
+                      'data-[active=true]:font-medium data-[active=true]:text-primary'
                     )}
                     color="foreground"
                     size="lg"
@@ -165,7 +154,7 @@ export const Navbar = () => {
                   <Link
                     className={clsx(
                       linkStyles({ color: 'foreground' }),
-                      'data-[active=true]:text-primary data-[active=true]:font-medium'
+                      'data-[active=true]:font-medium data-[active=true]:text-primary'
                     )}
                     color="foreground"
                     size="lg"
@@ -180,7 +169,7 @@ export const Navbar = () => {
                 <Link
                   className={clsx(
                     linkStyles({ color: 'foreground' }),
-                    'data-[active=true]:text-primary data-[active=true]:font-medium'
+                    'data-[active=true]:font-medium data-[active=true]:text-primary'
                   )}
                   color="foreground"
                   size="lg"

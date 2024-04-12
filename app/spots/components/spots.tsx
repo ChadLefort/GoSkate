@@ -6,12 +6,7 @@ import { Link } from '@nextui-org/link';
 import { Tab, Tabs } from '@nextui-org/tabs';
 import { useMediaQuery } from 'usehooks-ts';
 import type { SortDescriptor } from '@nextui-org/table';
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-} from '@nextui-org/dropdown';
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@nextui-org/dropdown';
 import { Button } from '@nextui-org/button';
 import type { Selection } from '@nextui-org/table';
 import { IconChevronDown, IconPlus } from '@tabler/icons-react';
@@ -74,15 +69,10 @@ export default function Spots({ spots, labels }: Props) {
   const filteredItems = useMemo(() => {
     let filteredSpots = [...spots];
 
-    if (
-      labelFilter !== 'all' &&
-      Array.from(labelFilter).length !== labels.length
-    ) {
+    if (labelFilter !== 'all' && Array.from(labelFilter).length !== labels.length) {
       filteredSpots = filteredSpots.filter((spot) => {
         return Array.from(labelFilter).some((labelId) =>
-          spot.spotsToLabels
-            .map((data) => data.label.id)
-            .includes(labelId as string)
+          spot.spotsToLabels.map((data) => data.label.id).includes(labelId as string)
         );
       });
     }
@@ -144,7 +134,7 @@ export default function Spots({ spots, labels }: Props) {
   );
 
   return (
-    <div className="flex flex-wrap flex-grow flex-row-reverse justify-between">
+    <div className="flex flex-grow flex-row-reverse flex-wrap justify-between">
       <div>
         <Dropdown>
           <DropdownTrigger className="hidden sm:flex">
@@ -160,11 +150,7 @@ export default function Spots({ spots, labels }: Props) {
             onSelectionChange={setLabelFilter}
           >
             {labels.map((label) => (
-              <DropdownItem
-                key={label.id}
-                className="capitalize"
-                color={label.type}
-              >
+              <DropdownItem key={label.id} className="capitalize" color={label.type}>
                 {label.name}
               </DropdownItem>
             ))}
@@ -181,8 +167,8 @@ export default function Spots({ spots, labels }: Props) {
       <Tabs classNames={{ panel: 'flex flex-grow size-full' }}>
         {!isSmallDevice && (
           <Tab key="split" title="Split View">
-            <div className="flex-grow grid grid-cols-1 md:grid-cols-8 gap-3">
-              <div className="h-full col-span-4 m-h-96">{map}</div>
+            <div className="grid flex-grow grid-cols-1 gap-3 md:grid-cols-8">
+              <div className="m-h-96 col-span-4 h-full">{map}</div>
 
               <div className="col-span-4 flex">
                 <SpotsTable

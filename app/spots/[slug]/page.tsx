@@ -2,12 +2,7 @@ import { Suspense } from 'react';
 import { Spinner } from '@nextui-org/spinner';
 import { redirect } from 'next/navigation';
 
-import {
-  deleteSpot,
-  getNearbySpots,
-  getSpotBySlug,
-  type SpotWithImages,
-} from '@/actions/spot-actions';
+import { deleteSpot, getNearbySpots, getSpotBySlug, type SpotWithImages } from '@/actions/spot-actions';
 
 import Spot from '../components/spot';
 
@@ -36,13 +31,7 @@ export default async function SpotPage({ params }: Props) {
 
   return (
     <Suspense fallback={<Spinner />}>
-      {spot && (
-        <Spot
-          spot={spot}
-          nearbySpots={nearbySpots}
-          handleDelete={handleDelete}
-        />
-      )}
+      {spot && <Spot spot={spot} nearbySpots={nearbySpots} handleDelete={handleDelete} />}
     </Suspense>
   );
 }

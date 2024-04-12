@@ -5,20 +5,14 @@ import { Button } from '@nextui-org/button';
 
 import { title } from '@/components/primitives';
 
-export default function Error({
-  error,
-  reset,
-}: {
-  error: Error;
-  reset: () => void;
-}) {
+export default function Error({ error, reset }: { error: Error; reset: () => void }) {
   useEffect(() => {
     // Log the error to an error reporting service
     console.error(error);
   }, [error]);
 
   return (
-    <div className="flex flex-col flex-grow justify-center items-center">
+    <div className="flex flex-grow flex-col items-center justify-center">
       <h2 className={title()}>Something went wrong!</h2>
       <Button
         className="mt-8"
