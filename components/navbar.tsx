@@ -22,7 +22,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '@nextui-org/popover';
 import { siteConfig } from '@/config/site';
 import { ThemeSwitch } from '@/components/theme-switch';
 import { Logo } from '@/components/icons';
-import { getUserById, type User } from '@/actions/user-actions';
+import { getUserById } from '@/actions/user-actions';
+import type { User } from '@/types/user';
 
 import { SignInButton } from './sign-in-button';
 import { Search } from './search';

@@ -4,10 +4,7 @@ import { desc, eq } from 'drizzle-orm';
 
 import db from '@/db/drizzle';
 import { spotImages } from '@/db/schema';
-import type { ThenArg } from '@/utils/type-helpers';
-
-export type SpotImage = ThenArg<ReturnType<typeof getSpotImagesById>>[number];
-export type UpsertSpot = Omit<SpotImage, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>;
+import type { AddSpotImage } from '@/types/spot-image';
 
 export const getSpotImagesById = async (id: string) => {
   const images = await db
@@ -19,7 +16,7 @@ export const getSpotImagesById = async (id: string) => {
   return images;
 };
 
-export const addSpotImages = async (data: UpsertSpot) => {
+export const addSpotImages = async (data: AddSpotImage) => {
   const [newSpotImage] = await db.insert(spotImages).values(data).returning();
 
   return newSpotImage;

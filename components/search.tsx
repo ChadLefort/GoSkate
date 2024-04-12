@@ -6,7 +6,8 @@ import { type Key, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAsyncList } from '@react-stately/data';
 
-import { searchSpots, type Spot } from '@/actions/spot-actions';
+import { searchSpots } from '@/actions/spot-actions';
+import type { Spot } from '@/types/spot';
 
 export const Search = () => {
   const autocompleteRef = useRef<HTMLInputElement | null>(null);

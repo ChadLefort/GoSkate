@@ -3,7 +3,7 @@
 import { Button } from '@nextui-org/button';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/modal';
 
-import type { Spot } from '@/actions/spot-actions';
+import type { Spot } from '@/types/spot';
 
 type Props = {
   spot: Spot;

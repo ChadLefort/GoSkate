@@ -12,7 +12,7 @@ import type { Selection } from '@nextui-org/table';
 import { IconChevronDown, IconPlus } from '@tabler/icons-react';
 import { useAuth } from '@clerk/nextjs';
 
-import type { Spot, SpotLabel } from '@/actions/spot-actions';
+import type { Spot, SpotLabel } from '@/types/spot';
 
 import DisplayMap from './display-map';
 import Pin from './pin';

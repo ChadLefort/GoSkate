@@ -3,7 +3,7 @@ import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 
 import 'dotenv/config';
-import type { AddSpot, AddSpotLabel } from '@/actions/spot-actions';
+import type { AddSpot, AddSpotLabel } from '@/types/spot';
 
 import { spotLabels, spots, spotsToLabels } from './schema';
 

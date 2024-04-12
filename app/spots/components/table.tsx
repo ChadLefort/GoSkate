@@ -14,7 +14,7 @@ import { Pagination } from '@nextui-org/pagination';
 import { useMediaQuery } from 'usehooks-ts';
 import { Chip } from '@nextui-org/chip';
 
-import type { Spot } from '@/actions/spot-actions';
+import type { Spot } from '@/types/spot';
 
 type Props = {
   spots: Spot[];

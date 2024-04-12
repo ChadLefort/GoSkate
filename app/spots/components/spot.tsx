@@ -11,7 +11,7 @@ import { Card, CardFooter } from '@nextui-org/card';
 import clsx from 'clsx';
 
 import { title } from '@/components/primitives';
-import { type Spot, type SpotWithImages } from '@/actions/spot-actions';
+import type { SpotWithImages } from '@/types/spot';
 
 import ConfirmModal from '../components/confirm-modal';
 import DisplayMap from '../components/display-map';

@@ -2,7 +2,8 @@ import { Suspense } from 'react';
 import { Spinner } from '@nextui-org/spinner';
 import { redirect } from 'next/navigation';
 
-import { deleteSpot, getNearbySpots, getSpotBySlug, type SpotWithImages } from '@/actions/spot-actions';
+import { deleteSpot, getNearbySpots, getSpotBySlug } from '@/actions/spot-actions';
+import type { SpotWithImages } from '@/types/spot';
 
 import Spot from '../components/spot';
 

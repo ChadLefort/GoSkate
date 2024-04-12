@@ -16,10 +16,10 @@ import { Select, SelectItem } from '@nextui-org/select';
 
 import { addSpot, getSpotBySlug, getSpotLabels } from '@/actions/spot-actions';
 import { title } from '@/components/primitives';
-import type { AddSpot, SpotLabel } from '@/actions/spot-actions';
 import type { Point } from '@/types/point';
 import { useUploadThing } from '@/utils/uploadthing';
 import { PRIMARY_BRAND_COLOR } from '@/config';
+import type { AddSpot, SpotLabel } from '@/types/spot';
 
 import Map from '../components/controlled-map';
 import Upload from '../components/upload';

@@ -1,7 +1,8 @@
 import clsx from 'clsx';
 
 import { title } from '@/components/primitives';
-import { getSpotLabels, getSpots, searchSpots, type Spot } from '@/actions/spot-actions';
+import { getSpotLabels, getSpots, searchSpots } from '@/actions/spot-actions';
+import type { Spot } from '@/types/spot';
 
 import Spots from './components/spots';
 

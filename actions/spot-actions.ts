@@ -5,17 +5,9 @@ import { and, desc, eq, not, or, sql } from 'drizzle-orm';
 
 import db from '@/db/drizzle';
 import { spots, spotsToLabels } from '@/db/schema';
-import type { ThenArg } from '@/utils/type-helpers';
 import type { Point } from '@/types/point';
 import { checkAdmin, checkLoggedIn } from '@/utils/auth';
-
-export type Spot = ThenArg<ReturnType<typeof getSpots>>[number];
-export type SpotWithImages = NonNullable<ThenArg<ReturnType<typeof getSpotBySlug>>>;
-export type SpotLabel = ThenArg<ReturnType<typeof getSpotLabels>>[number];
-export type AddSpot = Omit<Spot, 'id' | 'slug' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'spotsToLabels'> & {
-  labels: string | string[];
-};
-export type AddSpotLabel = Omit<SpotLabel, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>;
+import type { AddSpot } from '@/types/spot';
 
 export const getSpots = async () => {
   const data = await db.query.spots.findMany({

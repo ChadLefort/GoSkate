@@ -4,10 +4,7 @@ import { desc, eq } from 'drizzle-orm';
 
 import db from '@/db/drizzle';
 import { users } from '@/db/schema';
-import type { ThenArg } from '@/utils/type-helpers';
-
-export type User = ThenArg<ReturnType<typeof getUsers>>[number];
-export type AddEditUser = Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>;
+import type { AddEditUser } from '@/types/user';
 
 export const getUsers = async () => {
   const data = await db.select().from(users).orderBy(desc(users.createdAt));
