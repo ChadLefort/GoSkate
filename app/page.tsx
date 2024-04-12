@@ -25,9 +25,7 @@ export default function Home() {
 
       <div className="flex gap-3">
         <NextLink href="/spots">
-          <Button size="lg" variant="shadow">
-            Check Out Spots
-          </Button>
+          <Button size="lg">Check Out Spots</Button>
         </NextLink>
       </div>
     </section>

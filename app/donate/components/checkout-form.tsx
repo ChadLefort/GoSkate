@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Slider } from '@nextui-org/slider';
 import { Button } from '@nextui-org/button';
+import { IconCash } from '@tabler/icons-react';
 
 import { formatAmountForDisplay } from '@/utils/stripe-helpers';
 import * as config from '@/config';
@@ -38,16 +39,18 @@ export default function CheckoutForm() {
         onChange={handleInputChange}
       />
 
-      <Button
-        size="lg"
-        variant="shadow"
-        type="submit"
-        className="mt-6 w-full"
-        isLoading={loading}
-        isDisabled={loading}
-      >
-        Donate {formatAmountForDisplay(input.customDonation, config.CURRENCY)}
-      </Button>
+      <div className="flex justify-center">
+        <Button
+          size="lg"
+          type="submit"
+          className="mt-6"
+          isLoading={loading}
+          isDisabled={loading}
+          startContent={<IconCash size={20} />}
+        >
+          Donate {formatAmountForDisplay(input.customDonation, config.CURRENCY)}
+        </Button>
+      </div>
     </form>
   );
 }

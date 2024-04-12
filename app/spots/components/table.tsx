@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  type SortDescriptor,
   Table,
   TableBody,
   TableCell,
@@ -9,7 +10,6 @@ import {
   TableRow,
 } from '@nextui-org/table';
 import { useRouter } from 'next/navigation';
-import { useMemo, useState } from 'react';
 import { Pagination } from '@nextui-org/pagination';
 import { useMediaQuery } from 'usehooks-ts';
 import { Chip } from '@nextui-org/chip';
@@ -19,37 +19,40 @@ import type { Spot } from '@/actions/spot-actions';
 type Props = {
   spots: Spot[];
   isSplitView?: boolean;
+  pages: number;
+  page: number;
+  setPage: (page: number) => void;
+  sortDescriptor: SortDescriptor;
+  setSortDescriptor: (descriptor: SortDescriptor) => void;
 };
 
-export default function SpotsTable({ spots, isSplitView }: Props) {
+export default function SpotsTable({
+  spots,
+  isSplitView,
+  pages,
+  page,
+  setPage,
+  sortDescriptor,
+  setSortDescriptor,
+}: Props) {
   const isSmallDevice = useMediaQuery('only screen and (max-width : 768px)');
   const isMediumDevice = useMediaQuery('only screen and (max-width : 1024px)');
   const labelToDisplay = isMediumDevice ? 3 : 5;
   const router = useRouter();
   const gotoSpot = (slug: string) => router.push(`/spots/${slug}`);
-  const [page, setPage] = useState(1);
-  const rowsPerPage = isSmallDevice ? 8 : 20;
-
-  const pages = Math.ceil(spots.length / rowsPerPage);
-
-  const items = useMemo(() => {
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
-
-    return spots.slice(start, end);
-  }, [page, rowsPerPage, spots]);
 
   return (
     <Table
       classNames={{ wrapper: 'flex-grow' }}
       aria-label="A table of skate spots"
       selectionMode="single"
+      sortDescriptor={sortDescriptor}
+      onSortChange={setSortDescriptor}
       bottomContent={
         <div className="flex w-full justify-center">
           <Pagination
             isCompact
             showControls
-            showShadow
             page={page}
             total={pages}
             onChange={(page) => setPage(page)}
@@ -59,21 +62,34 @@ export default function SpotsTable({ spots, isSplitView }: Props) {
     >
       {!isSmallDevice && !isSplitView ? (
         <TableHeader>
-          <TableColumn>Name</TableColumn>
-          <TableColumn>Address</TableColumn>
+          <TableColumn key="name" allowsSorting>
+            Name
+          </TableColumn>
+          <TableColumn key="address" allowsSorting>
+            Address
+          </TableColumn>
           <TableColumn>Labels</TableColumn>
-          <TableColumn>Bust Level</TableColumn>
+          <TableColumn key="bustLevel" allowsSorting>
+            Bust Level
+          </TableColumn>
         </TableHeader>
       ) : (
         <TableHeader>
-          <TableColumn>Name</TableColumn>
-          <TableColumn>Address</TableColumn>
-          <TableColumn>Bust Level</TableColumn>
+          <TableColumn key="name" allowsSorting>
+            Name
+          </TableColumn>
+          <TableColumn key="address" allowsSorting>
+            Address
+          </TableColumn>
+
+          <TableColumn key="bustLevel" allowsSorting>
+            Bust Level
+          </TableColumn>
         </TableHeader>
       )}
 
-      <TableBody emptyContent={'No rows to display.'}>
-        {items.map((spot) =>
+      <TableBody emptyContent={'No rows to display.'} items={spots}>
+        {(spot) =>
           !isSmallDevice && !isSplitView ? (
             <TableRow
               key={spot.id}
@@ -125,7 +141,7 @@ export default function SpotsTable({ spots, isSplitView }: Props) {
               <TableCell>{spot.bustLevel}</TableCell>
             </TableRow>
           )
-        )}
+        }
       </TableBody>
     </Table>
   );

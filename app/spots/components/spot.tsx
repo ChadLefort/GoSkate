@@ -31,19 +31,20 @@ export default function Spot({ spot, nearbySpots, handleDelete }: SpotProps) {
     <Suspense fallback={<Spinner />}>
       {spot && (
         <>
-          <div className="flex justify-between align-middle">
-            <h1 className={title()}>{spot.name}</h1>
+          <h1 className={title()}>{spot.name}</h1>
+
+          <div className="flex justify-between items-center">
+            <div>
+              {spot.spotsToLabels.map(({ label }) => (
+                <Chip key={label.id} color={label.type} className="me-3">
+                  {label.name}
+                </Chip>
+              ))}
+            </div>
+
             {isAdmin && (
               <ConfirmModal spot={spot} handleDelete={handleDelete} />
             )}
-          </div>
-
-          <div>
-            {spot.spotsToLabels.map(({ label }) => (
-              <Chip key={label.id} color={label.type} className="me-3 mb-3">
-                {label.name}
-              </Chip>
-            ))}
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

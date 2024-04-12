@@ -94,7 +94,7 @@ export const Navbar = () => {
         <NavbarItem className="hidden lg:flex">
           <Search />
         </NavbarItem>
-        {clerkUser ? (
+        {clerkUser.isSignedIn ? (
           <>
             <UserButton afterSignOutUrl="/" />
             {user?.premium ? (
@@ -112,9 +112,9 @@ export const Navbar = () => {
               </Popover>
             ) : null}
           </>
-        ) : (
+        ) : clerkUser.isLoaded ? (
           <SignInButton />
-        )}
+        ) : null}
       </NavbarContent>
 
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
@@ -145,7 +145,7 @@ export const Navbar = () => {
               </NavbarMenuItem>
             ))}
 
-            {user ? (
+            {clerkUser.isSignedIn ? (
               <>
                 <NavbarMenuItem>
                   <Link
@@ -175,7 +175,7 @@ export const Navbar = () => {
                   </Link>
                 </NavbarMenuItem>
               </>
-            ) : (
+            ) : clerkUser.isLoaded ? (
               <NavbarMenuItem>
                 <Link
                   className={clsx(
@@ -190,7 +190,7 @@ export const Navbar = () => {
                   Sign In
                 </Link>
               </NavbarMenuItem>
-            )}
+            ) : null}
           </>
         </div>
       </NavbarMenu>

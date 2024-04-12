@@ -22,7 +22,6 @@ export default function Error({
       <h2 className={title()}>Something went wrong!</h2>
       <Button
         className="mt-8"
-        variant="shadow"
         size="lg"
         onClick={
           // Attempt to recover by trying to re-render the segment

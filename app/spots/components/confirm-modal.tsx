@@ -22,7 +22,7 @@ export default function ConfirmModal({ spot, handleDelete }: Props) {
 
   return (
     <>
-      <Button onPress={onOpen} size="lg" variant="shadow" color="danger">
+      <Button onPress={onOpen} color="danger">
         Delete
       </Button>
       <Modal
@@ -41,14 +41,10 @@ export default function ConfirmModal({ spot, handleDelete }: Props) {
                 <p>Are you sure you want to delete this spot?</p>
               </ModalBody>
               <ModalFooter>
-                <Button variant="shadow" color="default" onPress={onClose}>
+                <Button color="default" onPress={onClose}>
                   Cancel
                 </Button>
-                <Button
-                  variant="shadow"
-                  color="danger"
-                  onClick={() => handleDelete()}
-                >
+                <Button color="danger" onClick={() => handleDelete()}>
                   Delete
                 </Button>
               </ModalFooter>

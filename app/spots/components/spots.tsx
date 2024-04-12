@@ -1,12 +1,23 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Marker, Popup } from 'react-map-gl';
 import { Link } from '@nextui-org/link';
 import { Tab, Tabs } from '@nextui-org/tabs';
 import { useMediaQuery } from 'usehooks-ts';
+import type { SortDescriptor } from '@nextui-org/table';
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from '@nextui-org/dropdown';
+import { Button } from '@nextui-org/button';
+import type { Selection } from '@nextui-org/table';
+import { IconChevronDown, IconPlus } from '@tabler/icons-react';
+import { useAuth } from '@clerk/nextjs';
 
-import type { Spot } from '@/actions/spot-actions';
+import type { Spot, SpotLabel } from '@/actions/spot-actions';
 
 import DisplayMap from './display-map';
 import Pin from './pin';
@@ -14,20 +25,83 @@ import SpotsTable from './table';
 
 type Props = {
   spots: Spot[];
+  labels: SpotLabel[];
 };
 
-export default function Spots({ spots }: Props) {
+export default function Spots({ spots, labels }: Props) {
   const isSmallDevice = useMediaQuery('only screen and (max-width : 768px)');
   const [popupInfo, setPopupInfo] = useState<Spot | null>(null);
+  const [labelFilter, setLabelFilter] = useState<Selection>('all');
+  const auth = useAuth();
   const [viewState, setViewState] = useState({
     latitude: 34.100028,
     longitude: -118.338894,
     zoom: 17,
   });
 
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((pos) => {
+      setViewState((prev) => ({
+        ...prev,
+        latitude: pos.coords.latitude,
+        longitude: pos.coords.longitude,
+        zoom: 5,
+      }));
+    });
+  }, []);
+
+  const [page, setPage] = useState(1);
+  const rowsPerPage = isSmallDevice ? 8 : 20;
+
+  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
+    column: 'age',
+    direction: 'ascending',
+  });
+
+  const sortedItems = useCallback(
+    (spots: Spot[]) => {
+      return [...spots].sort((a: Spot, b: Spot) => {
+        const first = a[sortDescriptor.column as keyof Spot] as number;
+        const second = b[sortDescriptor.column as keyof Spot] as number;
+        const cmp = first < second ? -1 : first > second ? 1 : 0;
+
+        return sortDescriptor.direction === 'descending' ? -cmp : cmp;
+      });
+    },
+    [sortDescriptor.column, sortDescriptor.direction]
+  );
+
+  const filteredItems = useMemo(() => {
+    let filteredSpots = [...spots];
+
+    if (
+      labelFilter !== 'all' &&
+      Array.from(labelFilter).length !== labels.length
+    ) {
+      filteredSpots = filteredSpots.filter((spot) => {
+        return Array.from(labelFilter).some((labelId) =>
+          spot.spotsToLabels
+            .map((data) => data.label.id)
+            .includes(labelId as string)
+        );
+      });
+    }
+
+    return filteredSpots;
+  }, [labels.length, spots, labelFilter]);
+
+  const pages = Math.ceil(filteredItems.length / rowsPerPage);
+
+  const items = useMemo(() => {
+    const start = (page - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+
+    return sortedItems(filteredItems).slice(start, end);
+  }, [filteredItems, page, rowsPerPage, sortedItems]);
+
   const pins = useMemo(
     () =>
-      spots.map((spot) => (
+      items.map((spot) => (
         <Marker
           key={spot.id}
           latitude={spot.location.lat}
@@ -41,19 +115,8 @@ export default function Spots({ spots }: Props) {
           <Pin />
         </Marker>
       )),
-    [spots]
+    [items]
   );
-
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition((pos) => {
-      setViewState((prev) => ({
-        ...prev,
-        latitude: pos.coords.latitude,
-        longitude: pos.coords.longitude,
-        zoom: 5,
-      }));
-    });
-  }, []);
 
   const map = useMemo(
     () => (
@@ -81,15 +144,56 @@ export default function Spots({ spots }: Props) {
   );
 
   return (
-    <div className="flex flex-col h-full">
-      <Tabs classNames={{ panel: 'flex flex-grow' }}>
+    <div className="flex flex-wrap flex-grow flex-row-reverse justify-between">
+      <div>
+        <Dropdown>
+          <DropdownTrigger className="hidden sm:flex">
+            <Button endContent={<IconChevronDown size={12} />} className="me-3">
+              Labels
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu
+            aria-label="Table Columns"
+            closeOnSelect={false}
+            selectedKeys={labelFilter}
+            selectionMode="multiple"
+            onSelectionChange={setLabelFilter}
+          >
+            {labels.map((label) => (
+              <DropdownItem
+                key={label.id}
+                className="capitalize"
+                color={label.type}
+              >
+                {label.name}
+              </DropdownItem>
+            ))}
+          </DropdownMenu>
+        </Dropdown>
+
+        {auth.isSignedIn && (
+          <Link href="/spots/add">
+            <Button endContent={<IconPlus size={12} />}>Add New</Button>
+          </Link>
+        )}
+      </div>
+
+      <Tabs classNames={{ panel: 'flex flex-grow size-full' }}>
         {!isSmallDevice && (
           <Tab key="split" title="Split View">
             <div className="flex-grow grid grid-cols-1 md:grid-cols-8 gap-3">
               <div className="h-full col-span-4 m-h-96">{map}</div>
 
               <div className="col-span-4 flex">
-                <SpotsTable spots={spots} isSplitView />
+                <SpotsTable
+                  spots={items}
+                  isSplitView
+                  pages={pages}
+                  page={page}
+                  setPage={setPage}
+                  sortDescriptor={sortDescriptor}
+                  setSortDescriptor={setSortDescriptor}
+                />
               </div>
             </div>
           </Tab>
@@ -98,7 +202,14 @@ export default function Spots({ spots }: Props) {
           <div className="flex flex-grow">{map}</div>
         </Tab>
         <Tab key="list" title="List">
-          <SpotsTable spots={spots} />
+          <SpotsTable
+            spots={items}
+            pages={pages}
+            page={page}
+            setPage={setPage}
+            sortDescriptor={sortDescriptor}
+            setSortDescriptor={setSortDescriptor}
+          />
         </Tab>
       </Tabs>
     </div>

@@ -9,15 +9,11 @@ export const SignInButton = () => {
 
   return pathname === '/sign-in' ? (
     <NextLink href="/sign-up">
-      <Button size="md" variant="shadow">
-        Sign Up
-      </Button>
+      <Button size="md">Sign Up</Button>
     </NextLink>
   ) : (
     <NextLink href="/sign-in">
-      <Button size="md" variant="shadow">
-        Sign In
-      </Button>
+      <Button size="md">Sign In</Button>
     </NextLink>
   );
 };

@@ -9,7 +9,7 @@ import CheckoutForm from './components/checkout-form';
 export default function DonatePage() {
   return (
     <>
-      <h1 className={clsx(title(), 'mb-6')}>Donate</h1>
+      <h1 className={clsx(title(), 'mb-3')}>Donate</h1>
 
       <div className="flex justify-center">
         <Card className="p-3 w-full xl:w-1/2">

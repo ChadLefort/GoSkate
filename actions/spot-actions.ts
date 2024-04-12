@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { and, desc, eq, not, sql } from 'drizzle-orm';
+import { and, desc, eq, not, or, sql } from 'drizzle-orm';
 
 import db from '@/db/drizzle';
 import { spots, spotsToLabels } from '@/db/schema';
@@ -85,7 +85,13 @@ export const searchSpots = async (searchTerm?: string) => {
         },
       },
     },
-    where: (spot, { ilike }) => ilike(spot.name, `%${searchTerm}%`),
+    where: (spot, { ilike }) =>
+      or(
+        ilike(spot.name, `%${searchTerm}%`),
+        ilike(spot.address, `%${searchTerm}%`),
+        ilike(spot.city, `%${searchTerm}%`),
+        ilike(spot.state, `%${searchTerm}%`)
+      ),
     orderBy: desc(spots.createdAt),
   });
 
@@ -121,27 +127,32 @@ export const getNearbySpots = async ({ lng, lat }: Point, id: string) => {
 
 export const addSpot = async (data: AddSpot & { labels: string[] }) => {
   const { userId } = await checkLoggedIn();
-
   const slug = data.name.toLowerCase().replace(/\s/g, '-');
-  const [newSpot] = await db
-    .insert(spots)
-    .values({
-      ...data,
-      slug,
-      userId,
-    })
-    .returning();
+  const existingSpot = await db.query.spots.findFirst({
+    where: (spot, { eq }) => eq(spot.slug, slug),
+  });
 
-  for (const id of data.labels) {
-    await db.insert(spotsToLabels).values({
-      spotId: newSpot.id,
-      labelId: id,
-    });
+  if (!existingSpot) {
+    const [newSpot] = await db
+      .insert(spots)
+      .values({
+        ...data,
+        slug,
+        userId,
+      })
+      .returning();
+
+    for (const id of data.labels) {
+      await db.insert(spotsToLabels).values({
+        spotId: newSpot.id,
+        labelId: id,
+      });
+    }
+
+    revalidatePath('/spots');
+
+    return newSpot;
   }
-
-  revalidatePath('/spots');
-
-  return newSpot;
 };
 
 export const deleteSpot = async (id: string) => {

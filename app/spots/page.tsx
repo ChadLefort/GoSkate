@@ -1,9 +1,12 @@
-import NextLink from 'next/link';
-import { Button } from '@nextui-org/button';
-import { auth } from '@clerk/nextjs/server';
+import clsx from 'clsx';
 
 import { title } from '@/components/primitives';
-import { getSpots, searchSpots, type Spot } from '@/actions/spot-actions';
+import {
+  getSpotLabels,
+  getSpots,
+  searchSpots,
+  type Spot,
+} from '@/actions/spot-actions';
 
 import Spots from './components/spots';
 
@@ -13,7 +16,7 @@ export default async function SpotsPage({
   searchParams: { search: string };
 }) {
   let data: Spot[] = [];
-  const { userId } = auth();
+  const labels = await getSpotLabels();
 
   if (search) {
     data = await searchSpots(search);
@@ -23,18 +26,9 @@ export default async function SpotsPage({
 
   return (
     <>
-      <div className="flex justify-between align-middle mb-6">
-        <h1 className={title()}>Spots</h1>
-        {userId && (
-          <NextLink href="/spots/add">
-            <Button size="lg" variant="shadow">
-              Add Spots
-            </Button>
-          </NextLink>
-        )}
-      </div>
+      <h1 className={clsx(title(), 'mb-3')}>Spots</h1>
 
-      <Spots spots={data} />
+      <Spots spots={data} labels={labels} />
     </>
   );
 }

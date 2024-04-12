@@ -5,7 +5,7 @@ import { title } from '@/components/primitives';
 export default function AboutPage() {
   return (
     <>
-      <h1 className={clsx(title(), 'mb-6')}>About</h1>
+      <h1 className={clsx(title(), 'mb-3')}>About</h1>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
         consectetur purus et tellus euismod, imperdiet condimentum ante mattis.

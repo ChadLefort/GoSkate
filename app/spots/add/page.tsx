@@ -56,7 +56,7 @@ const formSchema = z.object({
 });
 
 export default function AddSpotPage() {
-  const [categories, setCategories] = useState<SpotLabel[]>([]);
+  const [labels, setLabels] = useState<SpotLabel[]>([]);
   const router = useRouter();
   const [coordinates, setCoordinates] = useState<Point>();
   const [files, setFiles] = useState<File[]>([]);
@@ -127,17 +127,17 @@ export default function AddSpotPage() {
   }, []);
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      const categories = await getSpotLabels();
-      setCategories(categories);
+    const fetchLabels = async () => {
+      const labels = await getSpotLabels();
+      setLabels(labels);
     };
 
-    fetchCategories();
+    fetchLabels();
   }, []);
 
   return (
     <>
-      <h1 className={clsx(title(), 'mb-6')}>Add Spots</h1>
+      <h1 className={clsx(title(), 'mb-3')}>Add Spots</h1>
 
       {token && (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -162,7 +162,7 @@ export default function AddSpotPage() {
                   control={control}
                   render={({ field }) => (
                     <Select
-                      items={categories}
+                      items={labels}
                       label="Labels"
                       isRequired
                       placeholder="Select Labels"
@@ -302,16 +302,17 @@ export default function AddSpotPage() {
             </div>
           </div>
 
-          <Button
-            size="lg"
-            variant="shadow"
-            type="submit"
-            isLoading={isSubmitting || isUploading}
-            isDisabled={isSubmitting || isUploading || !isValid}
-            className="mt-12 w-full"
-          >
-            Add Spot
-          </Button>
+          <div className="flex justify-end">
+            <Button
+              size="lg"
+              type="submit"
+              isLoading={isSubmitting || isUploading}
+              isDisabled={isSubmitting || isUploading || !isValid}
+              className="mt-6 w-full md:w-auto"
+            >
+              Add Spot
+            </Button>
+          </div>
         </form>
       )}
     </>
