@@ -3,10 +3,10 @@ import { Geometry } from 'wkx';
 
 import type { Point } from '@/types/point';
 
-interface Coordinate {
+type Coordinate = {
   type: string;
   coordinates: number[];
-}
+};
 
 export const point = customType<{ data: Point; driverData: string }>({
   dataType() {
