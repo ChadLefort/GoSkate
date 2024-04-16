@@ -3,8 +3,7 @@ import clsx from 'clsx';
 import { title } from '@/components/primitives';
 import { getSpotLabels, getSpots, searchSpots } from '@/actions/spot-actions';
 import type { Spot } from '@/types/spot';
-
-import Spots from './components/spots';
+import Spots from '@/app/spots/_components/spots';
 
 export default async function SpotsPage({ searchParams: { search } }: { searchParams: { search: string } }) {
   let data: Spot[] = [];

@@ -5,8 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
 
 import type { Point } from '@/types/point';
-
-import Pin from './pin';
+import Pin from '@/app/spots/_components/pin';
 
 type MapProps = {
   coordinates?: Point;

@@ -13,10 +13,9 @@ import { IconChevronDown, IconPlus } from '@tabler/icons-react';
 import { useAuth } from '@clerk/nextjs';
 
 import type { Spot, SpotLabel } from '@/types/spot';
-
-import DisplayMap from './display-map';
-import Pin from './pin';
-import SpotsTable from './table';
+import DisplayMap from '@/app/spots/_components/display-map';
+import Pin from '@/app/spots/_components/pin';
+import SpotsTable from '@/app/spots/_components/table';
 
 type Props = {
   spots: Spot[];

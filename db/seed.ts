@@ -4,8 +4,7 @@ import postgres from 'postgres';
 
 import 'dotenv/config';
 import type { AddSpot, AddSpotLabel } from '@/types/spot';
-
-import { spotLabels, spots, spotsToLabels } from './schema';
+import { spotLabels, spots, spotsToLabels } from '@/db/schema';
 
 const queryClient = postgres(process.env.POSTGRES_CONNECTION_STRING || '');
 

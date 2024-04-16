@@ -3,8 +3,7 @@ import clsx from 'clsx';
 import { IconMedal } from '@tabler/icons-react';
 
 import { title } from '@/components/primitives';
-
-import CheckoutForm from './components/checkout-form';
+import CheckoutForm from '@/app/donate/_components/checkout-form';
 
 export default function DonatePage() {
   return (

@@ -20,9 +20,8 @@ import type { Point } from '@/types/point';
 import { useUploadThing } from '@/utils/uploadthing';
 import { PRIMARY_BRAND_COLOR } from '@/config';
 import type { AddSpot, SpotLabel } from '@/types/spot';
-
-import Map from '../components/controlled-map';
-import Upload from '../components/upload';
+import Map from '@/app/spots/_components/controlled-map';
+import Upload from '@/app/spots/_components/upload';
 
 const AddressAutofill = dynamic(
   async () => {

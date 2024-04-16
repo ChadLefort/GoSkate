@@ -1,7 +1,7 @@
 import { boolean, json, pgEnum, pgTable, primaryKey, smallint, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 import { relations, sql } from 'drizzle-orm';
 
-import { point } from './geometryType';
+import { point } from '@/db/geometryType';
 
 export const spots = pgTable('spots', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -55,7 +55,7 @@ export const spotsToLabels = pgTable(
   {
     spotId: uuid('spot_id')
       .notNull()
-      .references(() => spots.id),
+      .references(() => spots.id, { onDelete: 'cascade' }),
     labelId: uuid('label_id')
       .notNull()
       .references(() => spotLabels.id),

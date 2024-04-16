@@ -5,12 +5,14 @@ import { Link } from '@nextui-org/link';
 import clsx from 'clsx';
 import type { Viewport } from 'next';
 import { IconHeart } from '@tabler/icons-react';
+import { auth } from '@clerk/nextjs/server';
 
 import { siteConfig } from '@/config/site';
 import { fontSans } from '@/config/fonts';
 import { Navbar } from '@/components/navbar';
-
-import { Providers } from './providers';
+import { getUserById } from '@/actions/user-actions';
+import type { User } from '@/types/user';
+import { Providers } from '@/app/providers';
 
 export const metadata: Metadata = {
   title: {
@@ -32,14 +34,21 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const { userId } = auth();
+  let user: User | undefined;
+
+  if (userId) {
+    user = await getUserById(userId);
+  }
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
       <body className={clsx('min-h-screen bg-background font-sans antialiased', fontSans.variable)}>
         <Providers themeProps={{ attribute: 'class', defaultTheme: 'dark', children }}>
           <div className="relative flex h-screen flex-col">
-            <Navbar />
+            <Navbar user={user} />
             <main className="max-w-10xl container mx-auto flex flex-grow flex-col px-6 py-16">{children}</main>
             <footer className="flex w-full items-center justify-center py-3">
               <Link

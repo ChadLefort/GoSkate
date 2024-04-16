@@ -1,5 +1,6 @@
 import NextLink from 'next/link';
 import { Image } from '@nextui-org/image';
+import NextImage from 'next/image';
 import { Button } from '@nextui-org/button';
 
 import { title } from '@/components/primitives';
@@ -16,7 +17,15 @@ export default function Home() {
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-12">
       <div className="inline-block max-w-3xl justify-center text-center">
         <div className="mb-8">
-          <Image isBlurred src={image.src} alt={image.title} />
+          <Image
+            as={NextImage}
+            width={800}
+            height={800}
+            isBlurred
+            src={image.src}
+            alt={image.title}
+            className="object-contain"
+          />
         </div>
         <h1 className={title()}>
           Skate the world with <span className="text-primary">GoSkate</span>

@@ -1,7 +1,8 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { and, desc, eq, not, or, sql } from 'drizzle-orm';
+import { desc, eq, sql } from 'drizzle-orm';
+import { notFound } from 'next/navigation';
 
 import db from '@/db/drizzle';
 import { spots, spotsToLabels } from '@/db/schema';
@@ -23,6 +24,7 @@ export const getSpots = async () => {
         },
       },
     },
+    where: (spot, { isNull }) => isNull(spot.deletedAt),
   });
 
   return data;
@@ -47,7 +49,7 @@ export const getSpotBySlug = async (slug: string) => {
       },
       images: true,
     },
-    where: (spot, { eq }) => eq(spot.slug, slug.toLowerCase()),
+    where: (spot, { eq, and, isNull }) => and(eq(spot.slug, slug), isNull(spot.deletedAt)),
   });
 
   return data;
@@ -70,13 +72,17 @@ export const searchSpots = async (searchTerm?: string) => {
         },
       },
     },
-    where: (spot, { ilike }) =>
-      or(
-        ilike(spot.name, `%${searchTerm}%`),
-        ilike(spot.address, `%${searchTerm}%`),
-        ilike(spot.city, `%${searchTerm}%`),
-        ilike(spot.state, `%${searchTerm}%`)
+    where: (spot, { ilike, or, and, isNull }) =>
+      and(
+        or(
+          ilike(spot.name, `%${searchTerm}%`),
+          ilike(spot.address, `%${searchTerm}%`),
+          ilike(spot.city, `%${searchTerm}%`),
+          ilike(spot.state, `%${searchTerm}%`)
+        ),
+        isNull(spot.deletedAt)
       ),
+
     orderBy: desc(spots.createdAt),
   });
 
@@ -98,10 +104,11 @@ export const getNearbySpots = async ({ lng, lat }: Point, id: string) => {
       },
       images: true,
     },
-    where: (spot) =>
+    where: (spot, { eq, and, not, isNull }) =>
       and(
         not(eq(spot.id, id)),
-        sql`ST_DWithin(${spot.location}, ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326), ${radius})`
+        sql`ST_DWithin(${spot.location}, ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326), ${radius})`,
+        isNull(spot.deletedAt)
       ),
     limit: 6,
     orderBy: desc(spots.createdAt),
@@ -147,7 +154,10 @@ export const deleteSpot = async (id: string) => {
     throw new Error('You must be an admin to perform this action');
   }
 
-  await db.delete(spots).where(eq(spots.id, id));
+  await db
+    .update(spots)
+    .set({ deletedAt: sql`now()` })
+    .where(eq(spots.id, id));
 
   revalidatePath('/spots');
 };

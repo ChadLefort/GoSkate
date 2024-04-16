@@ -19,7 +19,7 @@ export function Clerk({ children }: ProvidersProps) {
   return (
     <ClerkProvider
       appearance={{
-        baseTheme: theme === 'dark' && dark,
+        baseTheme: theme === 'dark' ? dark : undefined,
         variables: {
           colorPrimary: PRIMARY_BRAND_COLOR,
           fontSize: '14px',
@@ -37,8 +37,7 @@ export function Clerk({ children }: ProvidersProps) {
           socialButtonsIconButton: buttonStyles({
             size: 'sm',
           }),
-          badge: 'bg-primary',
-
+          badge: 'text-default-500',
           userButtonPopoverActionButton: clsx(
             linkStyles({
               color: 'foreground',

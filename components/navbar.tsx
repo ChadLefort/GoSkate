@@ -13,8 +13,8 @@ import { Link } from '@nextui-org/link';
 import { link as linkStyles } from '@nextui-org/theme';
 import clsx from 'clsx';
 import NextLink from 'next/link';
-import { useClerk, UserButton, useUser } from '@clerk/nextjs';
-import { useEffect, useState } from 'react';
+import { SignedIn, SignedOut, useClerk, UserButton } from '@clerk/nextjs';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { IconMedal } from '@tabler/icons-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@nextui-org/popover';
@@ -22,16 +22,16 @@ import { Popover, PopoverContent, PopoverTrigger } from '@nextui-org/popover';
 import { siteConfig } from '@/config/site';
 import { ThemeSwitch } from '@/components/theme-switch';
 import { Logo } from '@/components/icons';
-import { getUserById } from '@/actions/user-actions';
 import type { User } from '@/types/user';
+import { SignInButton } from '@/components/sign-in-button';
+import { Search } from '@/components/search';
 
-import { SignInButton } from './sign-in-button';
-import { Search } from './search';
+type NavbarProps = {
+  user: User | undefined;
+};
 
-export const Navbar = () => {
-  const [user, setUser] = useState<User | null>(null);
+export const Navbar = ({ user }: NavbarProps) => {
   const router = useRouter();
-  const clerkUser = useUser();
   const { signOut } = useClerk();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -40,17 +40,6 @@ export const Navbar = () => {
     handleMenuToggle();
     signOut(() => router.push('/'));
   };
-
-  useEffect(() => {
-    const fetchUser = async (id: string) => {
-      const user = await getUserById(id);
-      user && setUser(user);
-    };
-
-    if (clerkUser.isSignedIn) {
-      fetchUser(clerkUser.user.id);
-    }
-  }, [clerkUser.isSignedIn, clerkUser.user?.id]);
 
   return (
     <NextUINavbar isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen} maxWidth="2xl" position="sticky" isBordered>
@@ -86,27 +75,28 @@ export const Navbar = () => {
         <NavbarItem className="hidden lg:flex">
           <Search />
         </NavbarItem>
-        {clerkUser.isSignedIn ? (
-          <>
-            <UserButton afterSignOutUrl="/" />
-            {user?.premium ? (
-              <Popover placement="bottom">
-                <PopoverTrigger>
-                  <IconMedal />
-                </PopoverTrigger>
 
-                <PopoverContent>
-                  <div className="px-1 py-2">
-                    <div className="text-small font-bold">Premium User</div>
-                    <div className="text-tiny">Thanks for the support!</div>
-                  </div>
-                </PopoverContent>
-              </Popover>
-            ) : null}
-          </>
-        ) : clerkUser.isLoaded ? (
+        <SignedIn>
+          <UserButton afterSignOutUrl="/" />
+          {user?.premium ? (
+            <Popover placement="bottom">
+              <PopoverTrigger>
+                <IconMedal />
+              </PopoverTrigger>
+
+              <PopoverContent>
+                <div className="px-1 py-2">
+                  <div className="text-small font-bold">Premium User</div>
+                  <div className="text-tiny">Thanks for the support!</div>
+                </div>
+              </PopoverContent>
+            </Popover>
+          ) : null}
+        </SignedIn>
+
+        <SignedOut>
           <SignInButton />
-        ) : null}
+        </SignedOut>
       </NavbarContent>
 
       <NavbarContent className="basis-1 pl-4 sm:hidden" justify="end">
@@ -135,37 +125,37 @@ export const Navbar = () => {
               </NavbarMenuItem>
             ))}
 
-            {clerkUser.isSignedIn ? (
-              <>
-                <NavbarMenuItem>
-                  <Link
-                    className={clsx(
-                      linkStyles({ color: 'foreground' }),
-                      'data-[active=true]:font-medium data-[active=true]:text-primary'
-                    )}
-                    color="foreground"
-                    size="lg"
-                    href="/user-profile"
-                    onClick={handleMenuToggle}
-                  >
-                    User Profile
-                  </Link>
-                </NavbarMenuItem>
-                <NavbarMenuItem>
-                  <Link
-                    className={clsx(
-                      linkStyles({ color: 'foreground' }),
-                      'data-[active=true]:font-medium data-[active=true]:text-primary'
-                    )}
-                    color="foreground"
-                    size="lg"
-                    onClick={handleSignOut}
-                  >
-                    Sign Out
-                  </Link>
-                </NavbarMenuItem>
-              </>
-            ) : clerkUser.isLoaded ? (
+            <SignedIn>
+              <NavbarMenuItem>
+                <Link
+                  className={clsx(
+                    linkStyles({ color: 'foreground' }),
+                    'data-[active=true]:font-medium data-[active=true]:text-primary'
+                  )}
+                  color="foreground"
+                  size="lg"
+                  href="/user-profile"
+                  onClick={handleMenuToggle}
+                >
+                  User Profile
+                </Link>
+              </NavbarMenuItem>
+              <NavbarMenuItem>
+                <Link
+                  className={clsx(
+                    linkStyles({ color: 'foreground' }),
+                    'data-[active=true]:font-medium data-[active=true]:text-primary'
+                  )}
+                  color="foreground"
+                  size="lg"
+                  onClick={handleSignOut}
+                >
+                  Sign Out
+                </Link>
+              </NavbarMenuItem>
+            </SignedIn>
+
+            <SignedOut>
               <NavbarMenuItem>
                 <Link
                   className={clsx(
@@ -180,7 +170,7 @@ export const Navbar = () => {
                   Sign In
                 </Link>
               </NavbarMenuItem>
-            ) : null}
+            </SignedOut>
           </>
         </div>
       </NavbarMenu>
