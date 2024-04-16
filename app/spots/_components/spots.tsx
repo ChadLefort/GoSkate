@@ -11,13 +11,12 @@ import { Button } from '@nextui-org/button';
 import type { Selection } from '@nextui-org/table';
 import { IconChevronDown, IconPlus } from '@tabler/icons-react';
 import { useAuth } from '@clerk/nextjs';
-import { set } from 'zod';
 
 import type { Spot, SpotLabel } from '@/types/spot';
 import DisplayMap from '@/app/spots/_components/display-map';
 import Pin from '@/app/spots/_components/pin';
 import SpotsTable from '@/app/spots/_components/table';
-import { getSpots } from '@/actions/spot-actions';
+import { getSpots, searchSpots, type SpotsParams } from '@/actions/spot-actions';
 
 type Props = {
   spots: Spot[];
@@ -76,16 +75,20 @@ export default function Spots({ spots, rowsPerPage, pages, labels, search }: Pro
   }, []);
 
   useEffect(() => {
-    if (search) setLocalSpots(spots);
+    const spotsParams: SpotsParams = {
+      direction: sortDescriptor.direction,
+      column: sortDescriptor.column as 'name' | 'address' | 'city' | 'state' | 'zip' | 'bust_level',
+      filters: labelFilter !== 'all' ? (Array.from(labelFilter) as unknown as string[]) : undefined,
+      offset: (page - 1) * rowsPerPage,
+      limit: rowsPerPage,
+    };
+
+    if (search) {
+      searchSpots(search, spotsParams).then((data) => setLocalSpots(data));
+    }
 
     if (!search) {
-      getSpots({
-        direction: sortDescriptor.direction,
-        column: sortDescriptor.column as 'name' | 'address' | 'city' | 'state' | 'zip' | 'bust_level',
-        filters: labelFilter !== 'all' ? (Array.from(labelFilter) as unknown as string[]) : undefined,
-        offset: (page - 1) * rowsPerPage,
-        limit: rowsPerPage,
-      }).then((data) => setLocalSpots(data));
+      getSpots(spotsParams).then((data) => setLocalSpots(data));
     }
   }, [sortDescriptor, labelFilter, page, rowsPerPage, search, spots]);
 

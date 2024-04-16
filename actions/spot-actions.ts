@@ -107,7 +107,14 @@ export const searchSpots = async (searchTerm?: string, spotParams?: SpotsParams)
     return await getSpots(spotParams);
   }
 
+  const sortColumn = sql.identifier(spotParams?.column ?? 'created_at');
+  const orderBy = spotParams?.direction === 'descending' ? desc(sortColumn) : asc(sortColumn);
+  const limit = spotParams?.limit ?? 20;
+  const offset = spotParams?.offset ?? 0;
   const data = await db.query.spots.findMany({
+    orderBy,
+    limit,
+    offset,
     with: {
       spotsToLabels: {
         columns: {
@@ -119,7 +126,7 @@ export const searchSpots = async (searchTerm?: string, spotParams?: SpotsParams)
         },
       },
     },
-    where: (spot, { ilike, or, and, isNull }) =>
+    where: (spot, { isNull, and, inArray }) =>
       and(
         or(
           ilike(spot.name, `%${searchTerm}%`),
@@ -127,9 +134,17 @@ export const searchSpots = async (searchTerm?: string, spotParams?: SpotsParams)
           ilike(spot.city, `%${searchTerm}%`),
           ilike(spot.state, `%${searchTerm}%`)
         ),
-        isNull(spot.deletedAt)
+        isNull(spot.deletedAt),
+        spotParams?.filters?.length
+          ? inArray(
+              spot.id,
+              db
+                .select({ id: spotsToLabels.spotId })
+                .from(spotsToLabels)
+                .where(inArray(spotsToLabels.labelId, spotParams.filters))
+            )
+          : undefined
       ),
-    orderBy: desc(spots.createdAt),
   });
 
   return data;
