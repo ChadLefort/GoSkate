@@ -1,0 +1,1 @@
+ALTER TABLE "spots" ALTER COLUMN "slug" SET DATA TYPE varchar(255);

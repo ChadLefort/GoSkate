@@ -42,16 +42,17 @@ const formSchema = z.object({
   name: z
     .string()
     .min(1, 'Name is required')
+    .max(100, 'Name is too long')
     .refine(validateSlug, (slug) => ({
       message: `${slug} is already taken`,
     })),
-  address: z.string().min(1, 'Address is required'),
-  addressLine2: z.string().optional(),
-  city: z.string().min(1, 'City is required'),
-  state: z.string().min(1, 'State is required'),
-  zip: z.string().min(1, 'Zip is required'),
+  address: z.string().min(1, 'Address is required').max(100, 'Address is too long'),
+  addressLine2: z.string().max(100, 'Address line 2 is too long').optional(),
+  city: z.string().min(1, 'City is required').max(100, 'City is too long'),
+  state: z.string().min(1, 'State is required').max(100, 'State is too long'),
+  zip: z.string().min(1, 'Zip is required').max(100, 'Zip is too long'),
   description: z.string().min(1, 'Description is required'),
-  labels: z.string().min(1, 'Labels are required'),
+  labels: z.string(),
 });
 
 export default function AddSpotPage() {
@@ -156,10 +157,8 @@ export default function AddSpotPage() {
                     <Select
                       items={labels}
                       label="Labels"
-                      isRequired
                       placeholder="Select Labels"
                       selectionMode="multiple"
-                      className=""
                       isInvalid={Boolean(errors.labels)}
                       errorMessage={errors.labels?.message}
                       {...field}
