@@ -23,7 +23,19 @@ export const Search = () => {
     },
   });
 
+  const handleInput = (value: string) => {
+    if (!value) {
+      router.push('/spots');
+    }
+
+    list.setFilterText(value);
+  };
+
   const handleSelection = (key: Key | null) => {
+    if (!key) {
+      router.push('/spots');
+    }
+
     if (key && !submitted) {
       list.setFilterText(list.items.find((item) => item.slug === key)?.name || '');
 
@@ -59,7 +71,7 @@ export const Search = () => {
       inputValue={list.filterText}
       isLoading={list.isLoading}
       items={list.items}
-      onInputChange={list.setFilterText}
+      onInputChange={handleInput}
       onSelectionChange={handleSelection}
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onKeyDown={(event: any) => {

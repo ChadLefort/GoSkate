@@ -62,8 +62,17 @@ export default function SpotsTable({
           <TableColumn key="address" allowsSorting>
             Address
           </TableColumn>
+          <TableColumn key="city" allowsSorting>
+            City
+          </TableColumn>
+          <TableColumn key="state" allowsSorting>
+            State
+          </TableColumn>
+          <TableColumn key="zip" allowsSorting>
+            Zip
+          </TableColumn>
           <TableColumn>Labels</TableColumn>
-          <TableColumn key="bustLevel" allowsSorting>
+          <TableColumn key="bust_level" allowsSorting>
             Bust Level
           </TableColumn>
         </TableHeader>
@@ -72,11 +81,13 @@ export default function SpotsTable({
           <TableColumn key="name" allowsSorting>
             Name
           </TableColumn>
-          <TableColumn key="address" allowsSorting>
-            Address
+          <TableColumn key="city" allowsSorting>
+            City
           </TableColumn>
-
-          <TableColumn key="bustLevel" allowsSorting>
+          <TableColumn key="state" allowsSorting>
+            State
+          </TableColumn>
+          <TableColumn key="bust_level" allowsSorting>
             Bust Level
           </TableColumn>
         </TableHeader>
@@ -87,11 +98,10 @@ export default function SpotsTable({
           !isSmallDevice && !isSplitView ? (
             <TableRow key={spot.id} className="cursor-pointer" onClick={() => gotoSpot(spot.slug)}>
               <TableCell>{spot.name}</TableCell>
-              <TableCell>
-                <span className="md:truncate">
-                  {spot.address} {spot.addressLine2} {spot.city}, {spot.state} {spot.zip}
-                </span>
-              </TableCell>
+              <TableCell>{spot.address}</TableCell>
+              <TableCell>{spot.city}</TableCell>
+              <TableCell>{spot.state}</TableCell>
+              <TableCell>{spot.zip}</TableCell>
               <TableCell>
                 {spot.spotsToLabels.slice(0, labelToDisplay).map(({ label }) => (
                   <Chip key={label.id} color={label.type} className="mb-3 me-3 xl:mb-0">
@@ -110,12 +120,8 @@ export default function SpotsTable({
           ) : (
             <TableRow key={spot.id} className="cursor-pointer" onClick={() => gotoSpot(spot.slug)}>
               <TableCell>{spot.name}</TableCell>
-              <TableCell>
-                <span className="md:truncate">
-                  {spot.address} {spot.addressLine2} {spot.city}, {spot.state} {spot.zip}
-                </span>
-              </TableCell>
-
+              <TableCell>{spot.city}</TableCell>
+              <TableCell>{spot.state}</TableCell>
               <TableCell>{spot.bustLevel}</TableCell>
             </TableRow>
           )

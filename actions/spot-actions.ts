@@ -1,8 +1,8 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { desc, eq, sql } from 'drizzle-orm';
-import { notFound } from 'next/navigation';
+import { asc, count, desc, eq, ilike, isNull, or, sql } from 'drizzle-orm';
+import type { SortDirection } from '@react-types/shared';
 
 import db from '@/db/drizzle';
 import { spots, spotsToLabels } from '@/db/schema';
@@ -10,9 +10,23 @@ import type { Point } from '@/types/point';
 import { checkAdmin, checkLoggedIn } from '@/utils/auth';
 import type { AddSpot } from '@/types/spot';
 
-export const getSpots = async () => {
+export type SpotsParams = {
+  direction?: SortDirection;
+  column?: 'name' | 'address' | 'city' | 'state' | 'zip' | 'bust_level' | 'created_at';
+  filters?: string[];
+  limit?: number;
+  offset?: number;
+};
+
+export const getSpots = async (spotParams?: SpotsParams) => {
+  const sortColumn = sql.identifier(spotParams?.column ?? 'created_at');
+  const orderBy = spotParams?.direction === 'descending' ? desc(sortColumn) : asc(sortColumn);
+  const limit = spotParams?.limit ?? 20;
+  const offset = spotParams?.offset ?? 0;
   const data = await db.query.spots.findMany({
-    orderBy: desc(spots.createdAt),
+    orderBy,
+    limit,
+    offset,
     with: {
       spotsToLabels: {
         columns: {
@@ -24,7 +38,19 @@ export const getSpots = async () => {
         },
       },
     },
-    where: (spot, { isNull }) => isNull(spot.deletedAt),
+    where: (spot, { isNull, and, inArray }) =>
+      and(
+        isNull(spot.deletedAt),
+        spotParams?.filters?.length
+          ? inArray(
+              spot.id,
+              db
+                .select({ id: spotsToLabels.spotId })
+                .from(spotsToLabels)
+                .where(inArray(spotsToLabels.labelId, spotParams.filters))
+            )
+          : undefined
+      ),
   });
 
   return data;
@@ -33,6 +59,27 @@ export const getSpots = async () => {
 export const getSpotLabels = async () => {
   const categories = await db.query.spotLabels.findMany();
   return categories;
+};
+
+export const getSpotsTotal = async (searchTerm?: string) => {
+  const query = db.select({ count: count() }).from(spots).where(isNull(spots.deletedAt));
+
+  if (searchTerm) {
+    const [total] = await query
+      .$dynamic()
+      .where(
+        or(
+          ilike(spots.name, `%${searchTerm}%`),
+          ilike(spots.address, `%${searchTerm}%`),
+          ilike(spots.city, `%${searchTerm}%`),
+          ilike(spots.state, `%${searchTerm}%`)
+        )
+      );
+    return total.count;
+  } else {
+    const [total] = await query;
+    return total.count;
+  }
 };
 
 export const getSpotBySlug = async (slug: string) => {
@@ -55,9 +102,9 @@ export const getSpotBySlug = async (slug: string) => {
   return data;
 };
 
-export const searchSpots = async (searchTerm?: string) => {
+export const searchSpots = async (searchTerm?: string, spotParams?: SpotsParams) => {
   if (!searchTerm) {
-    return await getSpots();
+    return await getSpots(spotParams);
   }
 
   const data = await db.query.spots.findMany({
@@ -82,7 +129,6 @@ export const searchSpots = async (searchTerm?: string) => {
         ),
         isNull(spot.deletedAt)
       ),
-
     orderBy: desc(spots.createdAt),
   });
 
