@@ -2,12 +2,13 @@
 
 import { Button } from '@nextui-org/button';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/modal';
+import { toast } from 'sonner';
 
 import type { Spot } from '@/types/spot';
 
 type Props = {
   spot: Spot;
-  handleDelete: () => void;
+  handleDelete: () => Promise<void>;
 };
 
 export default function ConfirmModal({ spot, handleDelete }: Props) {
@@ -30,7 +31,13 @@ export default function ConfirmModal({ spot, handleDelete }: Props) {
                 <Button color="default" onPress={onClose}>
                   Cancel
                 </Button>
-                <Button color="danger" onClick={() => handleDelete()}>
+                <Button
+                  color="danger"
+                  onClick={async () => {
+                    await handleDelete();
+                    toast.success(`${spot.name} has been successfully deleted`);
+                  }}
+                >
                   Delete
                 </Button>
               </ModalFooter>

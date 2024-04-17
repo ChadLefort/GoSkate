@@ -173,7 +173,7 @@ export const addSpot = async (data: AddSpot & { labels: string[] }) => {
   const { userId } = await checkLoggedIn();
   const slug = data.name.toLowerCase().replace(/\s/g, '-');
   const existingSpot = await db.query.spots.findFirst({
-    where: (spot, { eq }) => eq(spot.slug, slug),
+    where: (spot, { eq, and, isNull }) => and(eq(spot.slug, slug), isNull(spot.deletedAt)),
   });
 
   if (!existingSpot) {

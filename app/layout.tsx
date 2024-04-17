@@ -13,6 +13,7 @@ import { Navbar } from '@/components/navbar';
 import { getUserById } from '@/actions/user-actions';
 import type { User } from '@/types/user';
 import { Providers } from '@/app/providers';
+import { Toaster } from '@/components/toaster';
 
 export const metadata: Metadata = {
   title: {
@@ -64,6 +65,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               </Link>
             </footer>
           </div>
+          <Toaster />
         </Providers>
       </body>
     </html>

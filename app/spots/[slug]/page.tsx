@@ -21,7 +21,7 @@ export default async function SpotPage({ params }: Props) {
   const handleDelete = async () => {
     'use server';
 
-    deleteSpot(spot.id);
+    await deleteSpot(spot.id);
     redirect('/spots');
   };
 

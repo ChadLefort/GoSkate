@@ -13,6 +13,7 @@ import type { AddressAutofillRetrieveResponse } from '@mapbox/search-js-core';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Select, SelectItem } from '@nextui-org/select';
+import { toast } from 'sonner';
 
 import { addSpot, getSpotBySlug, getSpotLabels } from '@/actions/spot-actions';
 import { title } from '@/components/primitives';
@@ -95,9 +96,9 @@ export default function AddSpotPage() {
 
       if (spot) {
         await startUpload(files, { spotId: spot.id });
+        toast.success(`${spot.name} has successfully been added`);
+        router.push(`/spots/${spot.slug}`);
       }
-
-      router.push('/spots');
     }
   };
 
