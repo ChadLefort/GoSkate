@@ -53,6 +53,7 @@ const formSchema = z.object({
   state: z.string().min(1, 'State is required').max(100, 'State is too long'),
   zip: z.string().min(1, 'Zip is required').max(100, 'Zip is too long'),
   description: z.string().min(1, 'Description is required'),
+  bustLevel: z.number().int().min(0).max(10),
   labels: z.string(),
 });
 
@@ -88,10 +89,11 @@ export default function AddSpotPage() {
 
   const onSubmit: SubmitHandler<AddSpot> = async (data) => {
     if (coordinates) {
+      const labels = (data.labels as string).split(',');
       const spot = await addSpot({
         ...data,
         location: coordinates,
-        labels: (data.labels as string).split(','),
+        labels: labels.length && labels[0] ? labels : [],
       });
 
       if (spot) {
@@ -160,8 +162,6 @@ export default function AddSpotPage() {
                       label="Labels"
                       placeholder="Select Labels"
                       selectionMode="multiple"
-                      isInvalid={Boolean(errors.labels)}
-                      errorMessage={errors.labels?.message}
                       {...field}
                     >
                       {(label) => <SelectItem key={label.id}>{label.name}</SelectItem>}
