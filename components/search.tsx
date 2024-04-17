@@ -3,13 +3,14 @@
 import { Autocomplete, AutocompleteItem } from '@nextui-org/autocomplete';
 import { IconSearch } from '@tabler/icons-react';
 import { type Key, useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAsyncList } from '@react-stately/data';
 
 import { searchSpots } from '@/actions/spot-actions';
 import type { Spot } from '@/types/spot';
 
 export const Search = () => {
+  const searchParams = useSearchParams();
   const autocompleteRef = useRef<HTMLInputElement | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const router = useRouter();
@@ -58,6 +59,12 @@ export const Search = () => {
       }
     }
   }, [submitted, router, list]);
+
+  useEffect(() => {
+    const searchQuery = searchParams.get('search');
+    if (searchQuery) list.setFilterText(searchQuery);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Autocomplete

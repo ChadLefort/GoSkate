@@ -11,26 +11,28 @@ import { Button } from '@nextui-org/button';
 import type { Selection } from '@nextui-org/table';
 import { IconChevronDown, IconPlus } from '@tabler/icons-react';
 import { useAuth } from '@clerk/nextjs';
+import { useSearchParams } from 'next/navigation';
 
 import type { Spot, SpotLabel } from '@/types/spot';
 import DisplayMap from '@/app/spots/_components/display-map';
 import Pin from '@/app/spots/_components/pin';
 import SpotsTable from '@/app/spots/_components/table';
-import { getSpots, searchSpots, type SpotsParams } from '@/actions/spot-actions';
+import { getSpots, getSpotsTotal, searchSpots, type SpotsParams } from '@/actions/spot-actions';
 
 type Props = {
   spots: Spot[];
   rowsPerPage: number;
-  pages: number;
   labels: SpotLabel[];
-  search?: string;
 };
 
-export default function Spots({ spots, rowsPerPage, pages, labels, search }: Props) {
+export default function Spots({ spots, rowsPerPage, labels }: Props) {
+  const searchParams = useSearchParams();
   const isSmallDevice = useMediaQuery('only screen and (max-width : 768px)');
   const [popupInfo, setPopupInfo] = useState<Spot | null>(null);
   const [localSpots, setLocalSpots] = useState<Spot[]>(spots);
   const [labelFilter, setLabelFilter] = useState<Selection>('all');
+  const [total, setTotal] = useState(1);
+  const [pages, setPages] = useState(1);
   const auth = useAuth();
   const [page, setPage] = useState(1);
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
@@ -75,6 +77,7 @@ export default function Spots({ spots, rowsPerPage, pages, labels, search }: Pro
   }, []);
 
   useEffect(() => {
+    const search = searchParams.get('search') as string;
     const spotsParams: SpotsParams = {
       direction: sortDescriptor.direction,
       column: sortDescriptor.column as 'name' | 'address' | 'city' | 'state' | 'zip' | 'bust_level',
@@ -83,14 +86,18 @@ export default function Spots({ spots, rowsPerPage, pages, labels, search }: Pro
       limit: rowsPerPage,
     };
 
+    getSpotsTotal(search, spotsParams).then((data) => setTotal(data));
+
     if (search) {
       searchSpots(search, spotsParams).then((data) => setLocalSpots(data));
-    }
-
-    if (!search) {
+    } else {
       getSpots(spotsParams).then((data) => setLocalSpots(data));
     }
-  }, [sortDescriptor, labelFilter, page, rowsPerPage, search, spots]);
+  }, [sortDescriptor, labelFilter, page, rowsPerPage, searchParams, spots]);
+
+  useEffect(() => {
+    setPages(Math.ceil(total / rowsPerPage));
+  }, [total, rowsPerPage]);
 
   const map = useMemo(
     () => (

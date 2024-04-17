@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { asc, count, desc, eq, ilike, isNull, or, sql } from 'drizzle-orm';
+import { and, asc, count, desc, eq, ilike, inArray, isNull, or, sql } from 'drizzle-orm';
 import type { SortDirection } from '@react-types/shared';
 
 import db from '@/db/drizzle';
@@ -16,6 +16,19 @@ export type SpotsParams = {
   filters?: string[];
   limit?: number;
   offset?: number;
+};
+
+const getSpotLabelIds = (filters: string[]) => {
+  return db.select({ id: spotsToLabels.spotId }).from(spotsToLabels).where(inArray(spotsToLabels.labelId, filters));
+};
+
+const searchFilter = (searchTerm: string) => {
+  return or(
+    ilike(spots.name, `%${searchTerm}%`),
+    ilike(spots.address, `%${searchTerm}%`),
+    ilike(spots.city, `%${searchTerm}%`),
+    ilike(spots.state, `%${searchTerm}%`)
+  );
 };
 
 export const getSpots = async (spotParams?: SpotsParams) => {
@@ -41,15 +54,7 @@ export const getSpots = async (spotParams?: SpotsParams) => {
     where: (spot, { isNull, and, inArray }) =>
       and(
         isNull(spot.deletedAt),
-        spotParams?.filters?.length
-          ? inArray(
-              spot.id,
-              db
-                .select({ id: spotsToLabels.spotId })
-                .from(spotsToLabels)
-                .where(inArray(spotsToLabels.labelId, spotParams.filters))
-            )
-          : undefined
+        spotParams?.filters?.length ? inArray(spot.id, getSpotLabelIds(spotParams.filters)) : undefined
       ),
   });
 
@@ -57,24 +62,23 @@ export const getSpots = async (spotParams?: SpotsParams) => {
 };
 
 export const getSpotLabels = async () => {
-  const categories = await db.query.spotLabels.findMany();
+  const categories = await db.query.spotLabels.findMany({ orderBy: (spotLabel, { asc }) => asc(spotLabel.name) });
   return categories;
 };
 
-export const getSpotsTotal = async (searchTerm?: string) => {
-  const query = db.select({ count: count() }).from(spots).where(isNull(spots.deletedAt));
+export const getSpotsTotal = async (searchTerm?: string, spotParams?: SpotsParams) => {
+  const query = db
+    .select({ count: count() })
+    .from(spots)
+    .where(
+      and(
+        isNull(spots.deletedAt),
+        spotParams?.filters?.length ? inArray(spots.id, getSpotLabelIds(spotParams.filters)) : undefined
+      )
+    );
 
   if (searchTerm) {
-    const [total] = await query
-      .$dynamic()
-      .where(
-        or(
-          ilike(spots.name, `%${searchTerm}%`),
-          ilike(spots.address, `%${searchTerm}%`),
-          ilike(spots.city, `%${searchTerm}%`),
-          ilike(spots.state, `%${searchTerm}%`)
-        )
-      );
+    const [total] = await query.$dynamic().where(searchFilter(searchTerm));
     return total.count;
   } else {
     const [total] = await query;
@@ -128,22 +132,9 @@ export const searchSpots = async (searchTerm?: string, spotParams?: SpotsParams)
     },
     where: (spot, { isNull, and, inArray }) =>
       and(
-        or(
-          ilike(spot.name, `%${searchTerm}%`),
-          ilike(spot.address, `%${searchTerm}%`),
-          ilike(spot.city, `%${searchTerm}%`),
-          ilike(spot.state, `%${searchTerm}%`)
-        ),
+        searchFilter(searchTerm),
         isNull(spot.deletedAt),
-        spotParams?.filters?.length
-          ? inArray(
-              spot.id,
-              db
-                .select({ id: spotsToLabels.spotId })
-                .from(spotsToLabels)
-                .where(inArray(spotsToLabels.labelId, spotParams.filters))
-            )
-          : undefined
+        spotParams?.filters?.length ? inArray(spot.id, getSpotLabelIds(spotParams.filters)) : undefined
       ),
   });
 
