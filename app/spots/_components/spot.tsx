@@ -14,11 +14,13 @@ import type { SpotWithImages } from '@/types/spot';
 import ConfirmModal from '@/app/spots/_components/confirm-modal';
 import DisplayMap from '@/app/spots/_components/display-map';
 import Pin from '@/app/spots/_components/pin';
+import type { ServerActionResponse } from '@/types/server-action';
+import type { Spot } from '@/types/spot';
 
 type SpotProps = {
   spot: SpotWithImages;
   nearbySpots: SpotWithImages[];
-  handleDelete: () => Promise<void>;
+  handleDelete: () => Promise<ServerActionResponse<Spot> | object | undefined>;
 };
 
 export default function Spot({ spot, nearbySpots, handleDelete }: SpotProps) {

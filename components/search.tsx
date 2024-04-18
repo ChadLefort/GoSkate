@@ -16,10 +16,10 @@ export const Search = () => {
   const router = useRouter();
   const list = useAsyncList<Spot>({
     async load({ filterText }) {
-      const data = await searchSpots(filterText);
+      const results = await searchSpots(filterText);
 
       return {
-        items: data,
+        items: results.data,
       };
     },
   });

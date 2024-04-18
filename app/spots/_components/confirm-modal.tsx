@@ -3,16 +3,19 @@
 import { Button } from '@nextui-org/button';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/modal';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
+import type { ServerActionResponse } from '@/types/server-action';
 import type { Spot } from '@/types/spot';
 
 type Props = {
   spot: Spot;
-  handleDelete: () => Promise<void>;
+  handleDelete: () => Promise<ServerActionResponse<Spot> | object | undefined>;
 };
 
 export default function ConfirmModal({ spot, handleDelete }: Props) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const router = useRouter();
 
   return (
     <>
@@ -34,8 +37,16 @@ export default function ConfirmModal({ spot, handleDelete }: Props) {
                 <Button
                   color="danger"
                   onClick={async () => {
-                    await handleDelete();
-                    toast.success(`${spot.name} has been successfully deleted`);
+                    const result = (await handleDelete()) as ServerActionResponse<Spot> | undefined;
+
+                    if (!result?.success) {
+                      toast.error(result?.message);
+                    }
+
+                    if (result?.success) {
+                      toast.success(`${spot.name} has been successfully deleted`);
+                      router.push('/spots');
+                    }
                   }}
                 >
                   Delete

@@ -35,8 +35,8 @@ const AddressAutofill = dynamic(
 );
 
 const validateSlug = async (slug: string) => {
-  const spot = await getSpotBySlug(slug);
-  return !Boolean(spot?.id);
+  const results = await getSpotBySlug(slug);
+  return !Boolean(results.data?.id);
 };
 
 const formSchema = z.object({
@@ -90,13 +90,18 @@ export default function AddSpotPage() {
   const onSubmit: SubmitHandler<AddSpot> = async (data) => {
     if (coordinates) {
       const labels = (data.labels as string).split(',');
-      const spot = await addSpot({
+      const results = await addSpot({
         ...data,
         location: coordinates,
         labels: labels.length && labels[0] ? labels : [],
       });
 
-      if (spot) {
+      if (!results.success || results.status === 400) {
+        toast.error(results.message);
+      }
+
+      if (results.data) {
+        const spot = results.data;
         await startUpload(files, { spotId: spot.id });
         toast.success(`${spot.name} has successfully been added`);
         router.push(`/spots/${spot.slug}`);
@@ -128,7 +133,7 @@ export default function AddSpotPage() {
   useEffect(() => {
     const fetchLabels = async () => {
       const labels = await getSpotLabels();
-      setLabels(labels);
+      setLabels(labels.data);
     };
 
     fetchLabels();

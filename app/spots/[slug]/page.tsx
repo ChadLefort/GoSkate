@@ -1,9 +1,9 @@
-import { Suspense } from 'react';
-import { Spinner } from '@nextui-org/spinner';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 
+import Error from '@/components/error';
 import { deleteSpot, getNearbySpots, getSpotBySlug } from '@/actions/spot-actions';
 import Spot from '@/app/spots/_components/spot';
+import type { SpotWithImages } from '@/types/spot';
 
 type Props = {
   params: {
@@ -12,22 +12,28 @@ type Props = {
 };
 
 export default async function SpotPage({ params }: Props) {
-  const spot = await getSpotBySlug(params.slug);
+  let nearbySpots: SpotWithImages[] = [];
+  const results = await getSpotBySlug(params.slug);
+  const spot = results.data;
 
-  if (!spot) notFound();
+  if (results.data === undefined) notFound();
 
-  const nearbySpots = await getNearbySpots(spot.location, spot.id);
+  if (!results.success) {
+    return <Error message={results.message} error={results.error} />;
+  }
+
+  if (spot) {
+    const results = await getNearbySpots(spot.location, spot.id);
+    nearbySpots = results.data;
+  }
 
   const handleDelete = async () => {
     'use server';
 
-    await deleteSpot(spot.id);
-    redirect('/spots');
+    if (spot) {
+      return await deleteSpot(spot.id);
+    }
   };
 
-  return (
-    <Suspense fallback={<Spinner />}>
-      {spot && <Spot spot={spot} nearbySpots={nearbySpots} handleDelete={handleDelete} />}
-    </Suspense>
-  );
+  return spot && <Spot spot={spot} nearbySpots={nearbySpots} handleDelete={handleDelete} />;
 }

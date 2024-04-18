@@ -86,12 +86,12 @@ export default function Spots({ spots, rowsPerPage, labels }: Props) {
       limit: rowsPerPage,
     };
 
-    getSpotsTotal(search, spotsParams).then((data) => setTotal(data));
+    getSpotsTotal(search, spotsParams).then((results) => setTotal(results.data));
 
     if (search) {
-      searchSpots(search, spotsParams).then((data) => setLocalSpots(data));
+      searchSpots(search, spotsParams).then((results) => setLocalSpots(results.data));
     } else {
-      getSpots(spotsParams).then((data) => setLocalSpots(data));
+      getSpots(spotsParams).then((results) => setLocalSpots(results.data));
     }
   }, [sortDescriptor, labelFilter, page, rowsPerPage, searchParams, spots]);
 
