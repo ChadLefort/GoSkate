@@ -40,8 +40,16 @@ export const Search = () => {
     if (key && !submitted) {
       list.setFilterText(list.items.find((item) => item.slug === key)?.name || '');
 
-      autocompleteRef.current?.blur();
+      setSubmitted(true);
       router.push(`/spots/${key}`);
+    }
+  };
+
+  const handleFocus = () => {
+    if (submitted) {
+      autocompleteRef.current?.blur();
+    } else {
+      autocompleteRef.current?.focus();
     }
   };
 
@@ -54,7 +62,9 @@ export const Search = () => {
 
       if (selectedSpot) {
         router.push(`/spots/${selectedSpot.slug}`);
-      } else {
+      }
+
+      if (list.filterText) {
         router.push(`/spots?search=${list.filterText}`);
       }
     }
@@ -85,6 +95,8 @@ export const Search = () => {
           setSubmitted(true);
         }
       }}
+      onBlur={() => setSubmitted(true)}
+      onFocusChange={handleFocus}
       startContent={<IconSearch className="text-default-400" strokeWidth={2.5} size={20} />}
       classNames={{
         selectorButton: 'hidden',
