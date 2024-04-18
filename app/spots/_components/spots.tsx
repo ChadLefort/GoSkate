@@ -126,7 +126,7 @@ export default function Spots({ spots, rowsPerPage, labels }: Props) {
 
   return (
     <div className="flex flex-grow flex-row-reverse flex-wrap justify-between">
-      <div>
+      <div className="flex">
         <Dropdown>
           <DropdownTrigger className="hidden sm:flex">
             <Button endContent={<IconChevronDown size={12} />} className="me-3">

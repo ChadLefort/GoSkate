@@ -74,16 +74,13 @@ export const Search = () => {
       labelPlacement="outside"
       placeholder="Search Spots"
       allowsCustomValue
-      disableAnimation
+      menuTrigger="input"
       inputValue={list.filterText}
       isLoading={list.isLoading}
       items={list.items}
       onInputChange={handleInput}
       onSelectionChange={handleSelection}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      onKeyDown={(event: any) => {
-        event.continuePropagation();
-
+      onKeyDown={(event) => {
         if (event.key === 'Enter') {
           setSubmitted(true);
         }
