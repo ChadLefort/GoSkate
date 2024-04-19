@@ -20,6 +20,7 @@
   "dependencies": {
     "@clerk/nextjs": "5.0.1-snapshot.vf0e076d",
     "@clerk/themes": "2.0.0-snapshot.v68dabd484",
+    "@google/generative-ai": "^0.7.1",
     "@hookform/resolvers": "^3.3.4",
     "@mapbox/search-js-react": "1.0.0-beta.19",
     "@nextui-org/autocomplete": "^2.0.14",
@@ -51,6 +52,7 @@
     "@types/mapbox-gl": "^3.1.0",
     "@uploadthing/mime-types": "^0.2.7",
     "@uploadthing/react": "^6.4.4",
+    "ai": "^3.0.24",
     "clsx": "^2.1.0",
     "drizzle-orm": "^0.30.8",
     "framer-motion": "^11.1.5",

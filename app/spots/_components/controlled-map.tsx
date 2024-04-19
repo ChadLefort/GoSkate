@@ -66,6 +66,7 @@ export default function Map({ coordinates, setCoordinates }: MapProps) {
   return (
     <MapGL
       {...viewState}
+      onLoad={(e) => e.target.resize()}
       mapboxAccessToken={mapboxToken}
       mapStyle={mapboxStyle}
       onMove={(evt) => setViewState(evt.viewState)}

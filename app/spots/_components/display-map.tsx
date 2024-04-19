@@ -14,7 +14,7 @@ export default function DisplayMap({ children, ...props }: DisplayMapProps & Map
     theme === 'dark' ? process.env.NEXT_PUBLIC_MAPBOX_STYLE_DARK : process.env.NEXT_PUBLIC_MAPBOX_STYLE_LIGHT;
 
   return (
-    <MapGL mapboxAccessToken={mapboxToken} mapStyle={mapboxStyle} {...props}>
+    <MapGL onLoad={(e) => e.target.resize()} mapboxAccessToken={mapboxToken} mapStyle={mapboxStyle} {...props}>
       <NavigationControl position="top-left" />
       <FullscreenControl position="top-right" />
 

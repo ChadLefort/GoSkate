@@ -14,10 +14,10 @@ export default withUt({
   darkMode: 'class',
   plugins: [
     nextui({
+      addCommonColors: true,
       themes: {
         light: {
           colors: {
-            danger: '#ef4444',
             background: '#FFFFFF',
             foreground: '#11181C',
             primary: '#A1A1AA',
@@ -25,7 +25,6 @@ export default withUt({
         },
         dark: {
           colors: {
-            danger: '#ef4444',
             background: '#111111',
             foreground: '#ECEDEE',
             primary: '#52525B',

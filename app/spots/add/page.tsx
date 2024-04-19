@@ -14,6 +14,8 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Select, SelectItem } from '@nextui-org/select';
 import { toast } from 'sonner';
+import { useCompletion } from 'ai/react';
+import { Spinner } from '@nextui-org/spinner';
 
 import { addSpot, getSpotBySlug, getSpotLabels } from '@/actions/spot-actions';
 import { title } from '@/components/primitives';
@@ -65,10 +67,16 @@ export default function AddSpotPage() {
   const { startUpload, permittedFileInfo, isUploading } = useUploadThing('spotImages');
   const fileTypes = permittedFileInfo?.config ? Object.keys(permittedFileInfo?.config) : [];
   const [token, setToken] = useState('');
+  const { isLoading: isLoadingDescription, complete } = useCompletion({
+    api: '/api/ai/completion',
+  });
 
   const {
     register,
     handleSubmit,
+    watch,
+    getValues,
+    setValue,
     control,
     formState: { defaultValues, errors, isSubmitting, isValid },
   } = useForm<AddSpot>({
@@ -86,6 +94,30 @@ export default function AddSpotPage() {
     },
     resolver: zodResolver(formSchema),
   });
+
+  const watchFields = watch(['name', 'address', 'city', 'state', 'zip', 'labels']);
+
+  const generateAIDescription = useCallback(async () => {
+    try {
+      const [name, address, city, state, zip] = watchFields;
+      const selectedLabels = String(getValues('labels'));
+      const labelNames = selectedLabels
+        ? labels.filter((label) => selectedLabels.split(',').includes(label.id)).map((label) => label.name)
+        : [];
+
+      const completion = await complete(
+        `This spot is called ${name}, is located at ${address} ${city}, ${state} ${zip}, and is known for having the following items to skate: ${labelNames.join(', ')}.`
+      );
+
+      if (completion) {
+        setValue('description', completion);
+      } else {
+        throw new Error('Failed to generate a description');
+      }
+    } catch (error) {
+      toast.error((error as Error).message);
+    }
+  }, [complete, getValues, labels, setValue, watchFields]);
 
   const onSubmit: SubmitHandler<AddSpot> = async (data) => {
     if (coordinates) {
@@ -247,16 +279,29 @@ export default function AddSpotPage() {
                   />
                 </div>
 
-                <Textarea
-                  className="max-w-3xl"
-                  label="Description"
-                  placeholder="Enter your description"
-                  isRequired
-                  defaultValue={defaultValues?.description}
-                  isInvalid={Boolean(errors.description)}
-                  errorMessage={errors.description?.message}
-                  {...register('description')}
-                />
+                <div>
+                  <Textarea
+                    className="max-w-3xl"
+                    label="Description"
+                    placeholder="Enter your description"
+                    isRequired
+                    defaultValue={defaultValues?.description}
+                    isInvalid={Boolean(errors.description)}
+                    errorMessage={errors.description?.message}
+                    isDisabled={isLoadingDescription}
+                    {...register('description')}
+                  />
+
+                  {watchFields.every((field) => field) && (
+                    <button
+                      className="mt-2 flex cursor-pointer items-center text-sm"
+                      onClick={generateAIDescription}
+                      disabled={isLoadingDescription}
+                    >
+                      Generate a description using AI? {isLoadingDescription && <Spinner className="ms-3" size="sm" />}
+                    </button>
+                  )}
+                </div>
 
                 <Controller
                   name="bustLevel"
