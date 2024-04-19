@@ -11,9 +11,11 @@ import type { Point } from '@/types/point';
 import { checkAdmin, checkLoggedIn } from '@/utils/auth';
 import type { AddSpot } from '@/types/spot';
 
+export type SpotTableColumns = 'name' | 'address' | 'city' | 'state' | 'zip' | 'bust_level' | 'created_at';
+
 export type SpotsParams = {
   direction?: SortDirection;
-  column?: 'name' | 'address' | 'city' | 'state' | 'zip' | 'bust_level' | 'created_at';
+  column?: SpotTableColumns;
   filters?: string[];
   limit?: number;
   offset?: number;

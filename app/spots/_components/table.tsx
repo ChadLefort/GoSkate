@@ -21,9 +21,9 @@ type Props = {
   isSplitView?: boolean;
   pages: number;
   page: number;
-  setPage: (page: number) => void;
+  handlePageChange: (page: number) => void;
   sortDescriptor: SortDescriptor;
-  setSortDescriptor: (descriptor: SortDescriptor) => void;
+  handleSortChange: (descriptor: SortDescriptor) => void;
 };
 
 export default function SpotsTable({
@@ -31,9 +31,9 @@ export default function SpotsTable({
   isSplitView,
   pages,
   page,
-  setPage,
+  handlePageChange,
   sortDescriptor,
-  setSortDescriptor,
+  handleSortChange,
 }: Props) {
   const isSmallDevice = useMediaQuery('only screen and (max-width : 768px)');
   const isMediumDevice = useMediaQuery('only screen and (max-width : 1024px)');
@@ -47,10 +47,16 @@ export default function SpotsTable({
       aria-label="A table of skate spots"
       selectionMode="single"
       sortDescriptor={sortDescriptor}
-      onSortChange={setSortDescriptor}
+      onSortChange={handleSortChange}
       bottomContent={
         <div className="flex w-full justify-center">
-          <Pagination isCompact showControls page={page} total={pages} onChange={(page) => setPage(page)} />
+          <Pagination
+            isCompact
+            showControls
+            initialPage={page}
+            total={pages}
+            onChange={(page) => handlePageChange(page)}
+          />
         </div>
       }
     >

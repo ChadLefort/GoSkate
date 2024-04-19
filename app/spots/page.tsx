@@ -7,15 +7,18 @@ import Spots from '@/app/spots/_components/spots';
 import type { ServerActionResponse } from '@/types/server-action';
 import Error from '@/components/error';
 
-export default async function SpotsPage({ searchParams: { search } }: { searchParams: { search: string } }) {
+import { type URLSearchParams, validateSearchParams } from './_utils/validate-search-params';
+
+export default async function SpotsPage({ searchParams }: { searchParams: URLSearchParams }) {
   let data: Spot[] = [];
   let results: ServerActionResponse<Spot[]>;
   const labels = await getSpotLabels();
   const rowsPerPage = 20;
+  const { search, page, column, direction } = validateSearchParams(searchParams);
   const spotParams: SpotsParams = {
-    direction: 'descending',
-    column: 'created_at',
-    offset: 0,
+    direction,
+    column,
+    offset: (page - 1) * rowsPerPage,
     limit: rowsPerPage,
   };
 
