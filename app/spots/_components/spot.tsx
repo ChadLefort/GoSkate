@@ -79,7 +79,7 @@ export default function Spot({ spot, nearbySpots, handleDelete }: SpotProps) {
       )}
 
       <div>
-        <p className="mb-3">{spot.description}</p>
+        <p className="mb-3 whitespace-pre-line">{spot.description}</p>
 
         <p className="mb-3">
           <span className="font-bold">Address: </span>

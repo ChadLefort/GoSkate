@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { and, asc, count, desc, eq, ilike, inArray, isNull, ne, or, sql } from 'drizzle-orm';
+import { and, asc, count, desc, eq, ilike, inArray, isNull, or, sql } from 'drizzle-orm';
 import type { SortDirection } from '@react-types/shared';
 import type { PostgresError } from 'postgres';
 
@@ -296,8 +296,6 @@ export const addSpot = async (data: AddSpot & { labels: string[] }) => {
           labelId: id,
         });
       }
-
-      revalidatePath('/spots');
 
       return {
         success: true,

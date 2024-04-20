@@ -285,22 +285,29 @@ export default function AddSpotPage() {
                     label="Description"
                     placeholder="Enter your description"
                     isRequired
+                    disableAutosize
+                    disableAnimation
                     defaultValue={defaultValues?.description}
                     isInvalid={Boolean(errors.description)}
                     errorMessage={errors.description?.message}
                     isDisabled={isLoadingDescription}
+                    classNames={{
+                      base: 'max-w-xs',
+                      input: 'resize-y min-h-48',
+                    }}
                     {...register('description')}
                   />
 
-                  {watchFields.every((field) => field) && (
-                    <button
-                      className="mt-2 flex cursor-pointer items-center text-sm"
-                      onClick={generateAIDescription}
-                      disabled={isLoadingDescription}
-                    >
-                      Generate a description using AI? {isLoadingDescription && <Spinner className="ms-3" size="sm" />}
-                    </button>
-                  )}
+                  <button
+                    className={clsx(
+                      'mt-2 flex cursor-pointer items-center text-sm',
+                      watchFields.every((field) => field) ? 'visible' : 'invisible'
+                    )}
+                    onClick={generateAIDescription}
+                    disabled={isLoadingDescription}
+                  >
+                    Generate a description using AI? {isLoadingDescription && <Spinner className="ms-3" size="sm" />}
+                  </button>
                 </div>
 
                 <Controller

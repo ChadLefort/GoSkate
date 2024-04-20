@@ -14,7 +14,7 @@ export async function POST(req: Request) {
         parts: [
           {
             text: `Given the following information about this skateboarding spot. 
-            Respond with with a 2 to 3 sentences to describe the spot based on the name and skateboarding features: ${prompt}`,
+            Respond with with a paragraph or two to describe the spot based on the name and skateboarding features: ${prompt}`,
           },
         ],
       },
