@@ -5,6 +5,8 @@ export type Spot = ThenArg<ReturnType<typeof getSpots>>['data'][number];
 
 export type SpotWithImages = NonNullable<ThenArg<ReturnType<typeof getSpotBySlug>>['data']>;
 
+export type SpotImage = SpotWithImages['images'][number];
+
 export type SpotLabel = ThenArg<ReturnType<typeof getSpotLabels>>['data'][number];
 
 export type AddSpot = Omit<Spot, 'id' | 'slug' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'spotsToLabels'> & {

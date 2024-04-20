@@ -16,6 +16,7 @@ import DisplayMap from '@/app/spots/_components/display-map';
 import Pin from '@/app/spots/_components/pin';
 import type { ServerActionResponse } from '@/types/server-action';
 import type { Spot } from '@/types/spot';
+import ImageModal from '@/app/spots/_components/image-modal';
 
 type SpotProps = {
   spot: SpotWithImages;
@@ -45,20 +46,24 @@ export default function Spot({ spot, nearbySpots, handleDelete }: SpotProps) {
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         {spot.images.map((image) => (
-          <Image
-            key={image.id}
-            as={NextImage}
-            src={image.url}
-            height={200}
-            width={400}
-            isZoomed
-            className="size-full max-h-52 object-fill"
-            classNames={{
-              wrapper: 'flex flex-1',
-              zoomedWrapper: 'flex flex-1',
-            }}
-            alt={spot.name}
-          />
+          <ImageModal key={image.id} image={image}>
+            {({ onOpen }) => (
+              <Image
+                as={NextImage}
+                src={image.url}
+                height={200}
+                width={400}
+                onClick={onOpen}
+                isZoomed
+                className="size-full max-h-52 cursor-pointer object-fill"
+                classNames={{
+                  wrapper: 'flex flex-1',
+                  zoomedWrapper: 'flex flex-1',
+                }}
+                alt={spot.name}
+              />
+            )}
+          </ImageModal>
         ))}
       </div>
 
