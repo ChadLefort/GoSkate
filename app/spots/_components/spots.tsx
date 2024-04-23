@@ -28,6 +28,7 @@ type Props = {
 };
 
 export default function Spots({ spots, rowsPerPage, labels }: Props) {
+  const [isLoading, setIsLoading] = useState(true);
   const searchParams = useSearchParams();
   const router = useRouter();
   const isSmallDevice = useMediaQuery('only screen and (max-width : 768px)');
@@ -124,6 +125,7 @@ export default function Spots({ spots, rowsPerPage, labels }: Props) {
       page: searchParams.get('page'),
     });
 
+    setIsLoading(true);
     setPage(page);
     setSortDescriptor({ column, direction });
 
@@ -142,9 +144,13 @@ export default function Spots({ spots, rowsPerPage, labels }: Props) {
     getSpotsTotal(search, spotsParams).then((results) => setTotal(results.data));
 
     if (search) {
-      searchSpots(search, spotsParams).then((results) => setLocalSpots(results.data));
+      searchSpots(search, spotsParams)
+        .then((results) => setLocalSpots(results.data))
+        .finally(() => setIsLoading(false));
     } else {
-      getSpots(spotsParams).then((results) => setLocalSpots(results.data));
+      getSpots(spotsParams)
+        .then((results) => setLocalSpots(results.data))
+        .finally(() => setIsLoading(false));
     }
   }, [labelFilter, rowsPerPage, searchParams]);
 
@@ -226,12 +232,13 @@ export default function Spots({ spots, rowsPerPage, labels }: Props) {
               <div className="col-span-4 flex">
                 {page && pages && (
                   <SpotsTable
+                    isLoading={isLoading}
                     spots={localSpots}
                     isSplitView
                     pages={pages}
                     page={page}
-                    handlePageChange={handlePageChange}
                     sortDescriptor={sortDescriptor}
+                    handlePageChange={handlePageChange}
                     handleSortChange={handleSortChange}
                   />
                 )}
@@ -245,11 +252,12 @@ export default function Spots({ spots, rowsPerPage, labels }: Props) {
         <Tab key="list" title="List">
           {page && pages && (
             <SpotsTable
+              isLoading={isLoading}
               spots={localSpots}
               pages={pages}
               page={page}
-              handlePageChange={handlePageChange}
               sortDescriptor={sortDescriptor}
+              handlePageChange={handlePageChange}
               handleSortChange={handleSortChange}
             />
           )}

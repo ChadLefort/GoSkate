@@ -17,22 +17,26 @@ import { Chip } from '@nextui-org/chip';
 import type { Spot } from '@/types/spot';
 
 type Props = {
+  isLoading: boolean;
   spots: Spot[];
   isSplitView?: boolean;
   pages: number;
   page: number;
-  handlePageChange: (page: number) => void;
   sortDescriptor: SortDescriptor;
+  handlePageChange: (page: number) => void;
+
   handleSortChange: (descriptor: SortDescriptor) => void;
 };
 
 export default function SpotsTable({
+  isLoading,
   spots,
   isSplitView,
   pages,
   page,
-  handlePageChange,
   sortDescriptor,
+  handlePageChange,
+
   handleSortChange,
 }: Props) {
   const isSmallDevice = useMediaQuery('only screen and (max-width : 768px)');
@@ -99,7 +103,7 @@ export default function SpotsTable({
         </TableHeader>
       )}
 
-      <TableBody emptyContent={'No rows to display.'} items={spots}>
+      <TableBody emptyContent="No rows to display." items={spots} isLoading={isLoading}>
         {(spot) =>
           !isSmallDevice && !isSplitView ? (
             <TableRow key={spot.id} className="cursor-pointer" onClick={() => gotoSpot(spot.slug)}>
